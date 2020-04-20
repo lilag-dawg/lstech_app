@@ -9,6 +9,6 @@ var greyColor = Colors.grey[300];
 var greyColorSelected = Colors.grey[400];
 
 // phone size
-double phoneWidth = 411.42;
-double phoneHeight = 774.85;
+// set in navigationBar.dart with global variables
+
 
