@@ -28,8 +28,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
+    Constants.phoneWidth = MediaQuery.of(context).size.width;
+    Constants.phoneHeight = MediaQuery.of(context).size.height;
+    // screenWidth = MediaQuery.of(context).size.width;
+    // screenHeight = MediaQuery.of(context).size.height;
 
     _children = [
       MyHomeScreen(),
