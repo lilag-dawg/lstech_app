@@ -20,11 +20,30 @@ class MyTrainingScreen extends StatelessWidget {
       ),
       backgroundColor: Constants.backGroundColor,
       body: SingleChildScrollView(
-        child: Row(
+        child: Column( 
           children: <Widget>[
-            MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE', '100', 'RPM'),
-            SizedBox(width:50),
-            MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', '120', 'm'),
+            SizedBox(height:40),
+            Row(
+              children: <Widget>[
+                SizedBox(width: MediaQuery.of(context).size.width*(0.7/5.5)),
+                MyPowerDisplay(),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE', '100', 'RPM'),
+                MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', '120', 'm'),
+              ],
+            ),
+            SizedBox(height:20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                MySecondaryDashBoardData(Icons.directions_bike, 'VITESSE', '12.5', 'kmph'),
+                MySecondaryDashBoardData(Icons.alarm, 'TEMPS', '00:00', 'min'),
+              ],
+            ),
           ],
         ),
       ),
