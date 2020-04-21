@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/powerDisplay.dart';
+import '../widgets/secondaryDashBoardData.dart';
 import '../constants.dart' as Constants;
 
 class MyTrainingScreen extends StatelessWidget {
@@ -19,7 +20,13 @@ class MyTrainingScreen extends StatelessWidget {
       ),
       backgroundColor: Constants.backGroundColor,
       body: SingleChildScrollView(
-        child: MyPowerDisplay(),
+        child: Row(
+          children: <Widget>[
+            MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE', '100', 'RPM'),
+            SizedBox(width:50),
+            MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', '120', 'm'),
+          ],
+        ),
       ),
     );
   }

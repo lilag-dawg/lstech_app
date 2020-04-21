@@ -11,7 +11,7 @@ class MyPowerDisplay extends StatelessWidget {
       height: MediaQuery.of(context).size.width*(4.5/5.5),
       child: Column(
         children: <Widget>[
-          MyIconTitle(Icons.offline_bolt, 'Puissance', widgetFontWeight: FontWeight.bold),
+          MyIconTitle(Icons.offline_bolt, 'PUISSANCE', widgetFontWeight: FontWeight.bold),
           Row(
             children: <Widget>[
               SizedBox(width:MediaQuery.of(context).size.width*(0.8/5.5)),

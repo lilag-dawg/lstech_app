@@ -14,13 +14,13 @@ class MyIconTitle extends StatelessWidget {
       children: <Widget>[
         Icon(
           widgetIcon,
-          size: 25,
+          size: (MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*25,
         ),
         SizedBox(width:10),
         Text(
           widgetTite,
           style: TextStyle(
-            fontSize:25,
+            fontSize:(MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*20,
             fontWeight: widgetFontWeight, 
           ),
         ),
