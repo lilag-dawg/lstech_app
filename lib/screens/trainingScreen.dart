@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/powerDisplay.dart';
 import '../constants.dart' as Constants;
 
 class MyTrainingScreen extends StatelessWidget {
@@ -17,6 +18,9 @@ class MyTrainingScreen extends StatelessWidget {
         backgroundColor: Constants.greyColor
       ),
       backgroundColor: Constants.backGroundColor,
+      body: SingleChildScrollView(
+        child: MyPowerDisplay(),
+      ),
     );
   }
 }
