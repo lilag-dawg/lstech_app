@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../databases/base_model.dart';
 
-class TrainingSessionsTableModel extends BaseModel {
+class UsersTableModel extends BaseModel {
   static String dbName = 'users_table';
   static String dbFormat = 'CREATE TABLE ' +
       dbName +
@@ -11,21 +11,29 @@ class TrainingSessionsTableModel extends BaseModel {
   String surname;
   String birthday; //ISO-8601
   String email;
+  static String primaryKeySearchString = 'email = ?';
 
-  TrainingSessionsTableModel({@required this.forename, @required this.surname, this.birthday, this.email});
+  UsersTableModel(
+      {@required this.forename,
+      @required this.surname,
+      this.birthday,
+      @required this.email});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       'forename': forename,
       'surname': surname,
       'birthday': birthday,
-      'email' : email,
+      'email': email,
     };
     return map;
   }
 
   static UsersTableModel fromMap(Map<String, dynamic> map) {
     return UsersTableModel(
-        forename: map['forename'], surname: map['surname'], birthday: map['birthday'], email: map['email']);
+        forename: map['forename'],
+        surname: map['surname'],
+        birthday: map['birthday'],
+        email: map['email']);
   }
 }
