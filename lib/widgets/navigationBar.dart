@@ -32,7 +32,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     screenHeight = MediaQuery.of(context).size.height;
 
     _children = [
-      MyHomeScreen(),
+      //MyHomeScreen(),
+      MyHomeScreen2(),
       MyTrainingScreen(),
       MyHistoryScreen(),
     ];
