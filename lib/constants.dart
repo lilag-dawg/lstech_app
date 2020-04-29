@@ -11,4 +11,5 @@ var greyColorSelected = Colors.grey[400];
 // phone size
 // set in navigationBar.dart with global variables
 
-
+// emulator
+final bool isWorkingOnEmulator = true;
