@@ -3,11 +3,15 @@ import '../widgets/customScaffoldBody.dart';
 import '../widgets/secondaryDashBoardData.dart';
 import '../widgets/powerDisplay.dart';
 
+import 'package:provider/provider.dart';
+import '../models/bluetoothDeviceManager.dart';
+
 import '../constants.dart' as Constants;
 
 class MyTrainingScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
+    final wattza = Provider.of<BluetoothDeviceManager>(context);
     return Column(
       children: <Widget>[
         SizedBox(height: 40),

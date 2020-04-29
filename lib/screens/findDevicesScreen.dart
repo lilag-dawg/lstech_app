@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/customTile.dart';
 import '../models/deviceConnexionStatus.dart';
+import '../models/bluetoothDeviceManager.dart';
+import '../models/wattzaDevice.dart';
 
 import '../constants.dart' as Constants;
 
@@ -59,26 +62,27 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   }
 
   Future<void> _handleOnpressChanged(
-      BluetoothDevice device, bool newStatus) async {
+      BluetoothDevice device, bool newStatus, BluetoothDeviceManager wattza) async {
     final selectedDevice =
         devicesConnexionStatus.firstWhere((item) => item.getDevice == device);
     if (selectedDevice.connexionStatus) {
       await selectedDevice.device.disconnect();
     } else {
       await selectedDevice.device.connect();
+      wattza.add(WattzaDevice(device));
     }
     setState(() {
       selectedDevice.setConnexionStatus = newStatus;
     });
   }
 
-  List<Widget> _buildCustomTiles(List<DeviceConnexionStatus> result) {
+  List<Widget> _buildCustomTiles(List<DeviceConnexionStatus> result, BluetoothDeviceManager wattza) {
     return result
         .map(
           (d) => CustomTile(
             currentDevice: d,
             onTapTile: (BluetoothDevice d, bool status) async {
-              await _handleOnpressChanged(d, status);
+              await _handleOnpressChanged(d, status, wattza);
             },
           ),
         )
@@ -123,19 +127,20 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BluetoothDeviceManager wattza) {
     return SingleChildScrollView(
       child: Column(children: <Widget>[
         (isDoneScanning)
             ? Column(
                 children: <Widget>[
-                  Column(children: _buildCustomTiles(devicesConnexionStatus)),
+                  Column(children: _buildCustomTiles(devicesConnexionStatus, wattza)),
                 ],
               )
             : _buildAnimations(),
         (Constants.isWorkingOnEmulator)
             ? RaisedButton(
-                child: Text("Rechercher un Wattza"), onPressed: () {})
+              child: Text("Remettre à plus tard"),
+              color: Colors.red, onPressed: () {})
             : _buildScanningButton(),
       ]),
     );
@@ -174,6 +179,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildBody();
+    final wattza = Provider.of<BluetoothDeviceManager>(context);
+    return _buildBody(wattza);
   }
 }
