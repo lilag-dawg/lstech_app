@@ -6,13 +6,15 @@ import '../constants.dart' as Constants;
 
 class CustomTile extends StatelessWidget {
   final DeviceConnexionStatus currentDevice;
-  final Function(BluetoothDevice, bool) onPressed;
+  final Function(BluetoothDevice, bool) onTapTile;
 
-  const CustomTile({this.currentDevice, this.onPressed});
+  const CustomTile({this.currentDevice, this.onTapTile});
 
-  void _handlePress() {
-    onPressed(currentDevice.device, !currentDevice.connexionStatus);
+  void _handleTapTile() {
+    onTapTile(currentDevice.device, !currentDevice.connexionStatus);
   }
+
+  void _handlePressTrailing() {} // todo
 
   Widget _buildTitle() {
     if (currentDevice.device.name.length > 0) {
@@ -47,11 +49,11 @@ class CustomTile extends StatelessWidget {
   }
 
   Widget _buildTrailing() {
-    if (currentDevice.connexionStatus) {
-      return Icon(Icons.mood);
-    } else {
-      return Icon(Icons.mood_bad);
-    }
+    return RaisedButton(
+      child: Text("Not Paired"),
+      onPressed: () {
+      _handlePressTrailing();
+    });
   }
 
   @override
@@ -62,11 +64,12 @@ class CustomTile extends StatelessWidget {
         title: _buildTitle(),
         subtitle: _buildSubtitle(),
         onTap: () {
-          _handlePress();
+          _handleTapTile();
         },
         trailing: _buildTrailing(),
       ),
-      color: currentDevice.connexionStatus ? Colors.green[100] : Colors.red[100],
+      color:
+          currentDevice.connexionStatus ? Colors.green[100] : Colors.red[100],
     );
   }
 }
