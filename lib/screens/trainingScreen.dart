@@ -5,6 +5,7 @@ import '../widgets/powerDisplay.dart';
 
 import 'package:provider/provider.dart';
 import '../models/bluetoothDeviceManager.dart';
+import '../models/streamPackage.dart';
 
 import '../constants.dart' as Constants;
 
@@ -12,6 +13,7 @@ class MyTrainingScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     final wattza = Provider.of<BluetoothDeviceManager>(context);
+    StreamPackage xd = wattza.getRpm();
     return Column(
       children: <Widget>[
         SizedBox(height: 40),
@@ -25,8 +27,8 @@ class MyTrainingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             MySecondaryDashBoardData(
-                Icons.rotate_right, 'CADENCE', '100', 'RPM'),
-            MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', '120', 'm'),
+                Icons.rotate_right, 'CADENCE', wattza.getRpm(), 'RPM'), // 100
+            MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', null, 'm'), // 120
           ],
         ),
         SizedBox(height: 20),
@@ -34,8 +36,8 @@ class MyTrainingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             MySecondaryDashBoardData(
-                Icons.directions_bike, 'VITESSE', '12.5', 'kmph'),
-            MySecondaryDashBoardData(Icons.alarm, 'TEMPS', '00:00', 'min'),
+                Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
+            MySecondaryDashBoardData(Icons.alarm, 'TEMPS', null, 'min'), // 00:00
           ],
         ),
         SizedBox(height: 200), // hotfix for now

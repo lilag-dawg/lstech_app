@@ -67,9 +67,12 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         devicesConnexionStatus.firstWhere((item) => item.getDevice == device);
     if (selectedDevice.connexionStatus) {
       await selectedDevice.device.disconnect();
+      wattza.remove(device);
     } else {
       await selectedDevice.device.connect();
-      wattza.add(WattzaDevice(device));
+      await WattzaDevice.create(device).then((createdWattzaDevice){
+        wattza.add(createdWattzaDevice);
+      });
     }
     setState(() {
       selectedDevice.setConnexionStatus = newStatus;
