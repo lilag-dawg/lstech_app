@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:provider/provider.dart';
 
 import '../widgets/customTile.dart';
 import '../models/deviceConnexionStatus.dart';
@@ -12,6 +11,10 @@ import '../models/wattzaDevice.dart';
 import '../constants.dart' as Constants;
 
 class FindDevicesScreen extends StatefulWidget {
+
+  final BluetoothDeviceManager wattzaManager;
+  FindDevicesScreen(this.wattzaManager);
+
   @override
   _FindDevicesScreenState createState() => _FindDevicesScreenState();
 }
@@ -21,6 +24,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   List<DeviceConnexionStatus> devicesConnexionStatus = [];
 
   StreamSubscription<List<ScanResult>> scanSubscription;
+
 
   bool isDoneScanning;
 
@@ -38,7 +42,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
       }
     });
 
-    await getConnectedDevice().then((alreadyConnectedDevices) {
+    await getConnectedDevice().then((alreadyConnectedDevices) async{
       for (BluetoothDevice d in alreadyConnectedDevices) {
         bool isDeviceAlreadyAdded =
             devicesConnexionStatus.any((device) => device.getDevice == d);
@@ -47,6 +51,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
             device: d,
             connexionStatus: true,
           ));
+          await addWattzaDevice(d);
         } else {
           int errorFromScanResult = devicesConnexionStatus
               .indexWhere((device) => device.getDevice == d);
@@ -61,31 +66,35 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
     return devices;
   }
 
+  Future<void> addWattzaDevice(BluetoothDevice device) async {
+    await WattzaDevice.create(device).then((createdWattzaDevice){
+        widget.wattzaManager.add(createdWattzaDevice);
+      });
+  }
+
   Future<void> _handleOnpressChanged(
-      BluetoothDevice device, bool newStatus, BluetoothDeviceManager wattza) async {
+      BluetoothDevice device, bool newStatus) async {
     final selectedDevice =
         devicesConnexionStatus.firstWhere((item) => item.getDevice == device);
     if (selectedDevice.connexionStatus) {
       await selectedDevice.device.disconnect();
-      wattza.remove(device);
+      widget.wattzaManager.remove(device);
     } else {
       await selectedDevice.device.connect();
-      await WattzaDevice.create(device).then((createdWattzaDevice){
-        wattza.add(createdWattzaDevice);
-      });
+      await addWattzaDevice(device);
     }
     setState(() {
       selectedDevice.setConnexionStatus = newStatus;
     });
   }
 
-  List<Widget> _buildCustomTiles(List<DeviceConnexionStatus> result, BluetoothDeviceManager wattza) {
+  List<Widget> _buildCustomTiles(List<DeviceConnexionStatus> result) {
     return result
         .map(
           (d) => CustomTile(
             currentDevice: d,
             onTapTile: (BluetoothDevice d, bool status) async {
-              await _handleOnpressChanged(d, status, wattza);
+              await _handleOnpressChanged(d, status);
             },
           ),
         )
@@ -136,7 +145,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         (isDoneScanning)
             ? Column(
                 children: <Widget>[
-                  Column(children: _buildCustomTiles(devicesConnexionStatus, wattza)),
+                  Column(children: _buildCustomTiles(devicesConnexionStatus)),
                 ],
               )
             : _buildAnimations(),
@@ -182,7 +191,6 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final wattza = Provider.of<BluetoothDeviceManager>(context);
-    return _buildBody(wattza);
+    return _buildBody(widget.wattzaManager);
   }
 }

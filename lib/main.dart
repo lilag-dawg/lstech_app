@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Wattza app",
         home: MyNavigationBar(),
       ),

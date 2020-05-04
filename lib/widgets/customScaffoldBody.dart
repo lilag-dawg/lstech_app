@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/bluetoothDeviceManager.dart';
 import '../screens/findDevicesScreen.dart';
 import '../constants.dart' as Constants;
 
 class CustomScaffoldBody extends StatefulWidget {
-  
   final Widget body;
   CustomScaffoldBody({this.body});
   @override
@@ -12,7 +13,6 @@ class CustomScaffoldBody extends StatefulWidget {
 }
 
 class _CustomScaffoldBodyState extends State<CustomScaffoldBody> {
-
   ScrollController _controller;
   IconData arrowIcon;
   final double defaultAppBarHeight = 56.0; //kToolbarHeight
@@ -38,7 +38,6 @@ class _CustomScaffoldBodyState extends State<CustomScaffoldBody> {
     }
   }
 
-
   @override
   void initState() {
     _controller = ScrollController(
@@ -51,41 +50,49 @@ class _CustomScaffoldBodyState extends State<CustomScaffoldBody> {
 
   @override
   Widget build(BuildContext context) {
+    final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
     return CustomScrollView(
-        controller: _controller,
-        slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: expandedHeight,
-            backgroundColor: Constants.greyColor,
-            floating: false,
-            pinned: true,
-            title: Text('Wattza', style: TextStyle(color: Colors.black),),
-            leading: Icon(Icons.bluetooth_connected, color: Colors.black,),
-            bottom: PreferredSize(
-              child: Center(
-                child: Icon(arrowIcon),
-              ),
-              preferredSize: Size.fromHeight(0),
+      controller: _controller,
+      slivers: <Widget>[
+        SliverAppBar(
+          expandedHeight: expandedHeight,
+          backgroundColor: Constants.greyColor,
+          floating: false,
+          pinned: true,
+          title: Text(
+            'Wattza',
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: Icon(
+            Icons.bluetooth_connected,
+            color: Colors.black,
+          ),
+          bottom: PreferredSize(
+            child: Center(
+              child: Icon(arrowIcon),
             ),
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              background: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  SafeArea(
-                    child: Container(
+            preferredSize: Size.fromHeight(0),
+          ),
+          flexibleSpace: FlexibleSpaceBar(
+            centerTitle: true,
+            background: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                SafeArea(
+                  child: Container(
                     margin: EdgeInsets.only(top: defaultAppBarHeight),
-                      child: FindDevicesScreen(),
-                    ),
+                    child: FindDevicesScreen(wattzaManager),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: widget.body,
-          ),
-        ],
-      );
+        ),
+        SliverToBoxAdapter(
+          child: widget.body,
+        ),
+      ],
+    );
   }
 }
+
