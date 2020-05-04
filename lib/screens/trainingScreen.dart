@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/powerDisplay.dart';
 import '../widgets/secondaryDashBoardData.dart';
+import '../widgets/endTraining.dart';
 import '../constants.dart' as Constants;
 
 class MyTrainingScreen extends StatelessWidget {
@@ -44,6 +45,8 @@ class MyTrainingScreen extends StatelessWidget {
                 MySecondaryDashBoardData(Icons.alarm, 'TEMPS', '00:00', 'min'),
               ],
             ),
+            SizedBox(height:40),
+            MyEndTraining()
           ],
         ),
       ),

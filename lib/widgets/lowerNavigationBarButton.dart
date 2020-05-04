@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lstech_app/widgets/navigationBar.dart';
 import '../constants.dart' as Constants;
 
 class LowerNavigationBarButton extends StatefulWidget {
@@ -28,8 +27,8 @@ class _LowerNavigationBarButtonState extends State<LowerNavigationBarButton> {
         ? widget._currentPage.page.toInt()
         : Constants.defaultPageIndex;
     return SizedBox(
-      width: screenWidth/3,
-      height: screenHeight>500? screenHeight/14:screenHeight/10,
+      width: MediaQuery.of(context).size.width/3,
+      height: MediaQuery.of(context).size.height>500? MediaQuery.of(context).size.height/14:MediaQuery.of(context).size.height/10,
       child: FlatButton(
         highlightColor: Constants.greyColorSelected,
         color: selectedPage == widget._pageNumber ? Constants.greyColorSelected : Constants.greyColor,

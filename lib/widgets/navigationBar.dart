@@ -6,8 +6,6 @@ import '../screens/historyScreen.dart';
 import '../widgets/lowerNavigationBar.dart';
 import '../constants.dart' as Constants;
 
-double screenWidth;
-double screenHeight;
 
 class MyNavigationBar extends StatefulWidget {
   @override
@@ -28,8 +26,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
 
     _children = [
       MyHomeScreen(),
