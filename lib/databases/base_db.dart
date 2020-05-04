@@ -30,26 +30,26 @@ abstract class BaseDB {
     await db.execute(dbFormat);
   }
 
-  Future<List<Map<String, dynamic>>> query(String table) async =>
-      _db.query(table);
+  Future<List<Map<String, dynamic>>> query(String name) async =>
+      _db.query(name);
 
-  Future<int> insert(String table, BaseModel model) async =>
-      await _db.insert(table, model.toMap());
+  Future<int> insert(String name, BaseModel model) async =>
+      await _db.insert(name, model.toMap());
 
-  Future<int> deleteAll(String table) async => await _db.delete(table);
+  Future<int> deleteAll(String name) async => await _db.delete(name);
 
-  Future<Map<String, dynamic>> queryByPrimaryKey(
-      String table, String primaryKeySearchString, String primaryKey) async {
+  Future<List<Map<String, dynamic>>> queryByParameter(
+      String table, String whereString, dynamic parameter) async {
     var query = await _db
-        .query(table, where: primaryKeySearchString, whereArgs: [primaryKey]);
+        .query(table, where: whereString, whereArgs: [parameter]);
     if (query.length != 0) {
-      return query[0];
+      return query;
     } else {
       return null;
     }
   }
 
-  Future<int> updateByPrimaryKey(String table, BaseModel usersTable,
+  /*Future<int> updateByPrimaryKey(String table, BaseModel usersTable,
           String primaryKeySearchString, String primaryKey) async =>
       await _db.update(table, usersTable.toMap(),
           where: primaryKeySearchString, whereArgs: [primaryKey]);
@@ -57,5 +57,5 @@ abstract class BaseDB {
   Future<int> deleteByPrimaryKey(String table, BaseModel usersTable,
           String primaryKeySearchString, String primaryKey) async =>
       await _db.delete(table,
-          where: primaryKeySearchString, whereArgs: [primaryKey]);
+          where: primaryKeySearchString, whereArgs: [primaryKey]);*/
 }
