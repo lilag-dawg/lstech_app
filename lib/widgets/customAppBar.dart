@@ -16,21 +16,20 @@ class CustomAppBar extends StatefulWidget {
   _CustomAppBarState createState() => _CustomAppBarState();
 }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  bool _show;
+class _CustomAppBarState extends State<CustomAppBar>
+    with TickerProviderStateMixin {
   bool isScrollingUp;
   bool isScollingDown;
 
+  AnimationController controller;
+  Animation animation;
+
   void showTabs() {
-    setState(() {
-      _show = true;
-    });
+    controller.forward();
   }
 
   void hideTabs() {
-    setState(() {
-      _show = false;
-    });
+    controller.reverse();
   }
 
   void onVerticalDrag(DragUpdateDetails details) {
@@ -53,10 +52,40 @@ class _CustomAppBarState extends State<CustomAppBar> {
     //print(details.delta.dy);
   }
 
-  Widget _appBarBottom(bool show) {
+  @override
+  void initState() {
+    isScrollingUp = false;
+    isScollingDown = false;
+    controller =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
+    return _AnimatedAppBar(
+      animation: animation,
+      onVerticalDrag: onVerticalDrag,
+      body: widget.body,
+    );
+  }
+}
+
+class _AnimatedAppBar extends AnimatedWidget {
+  _AnimatedAppBar(
+      {Key key, Animation<double> animation, this.onVerticalDrag, this.body})
+      : super(key: key, listenable: animation);
+
+  final Function(DragUpdateDetails) onVerticalDrag;
+  final Widget body;
+
+  static final _sizeTween = Tween<double>(begin: 0.0, end: 80.0);
+
+  Widget _appBarBottom() {
     return PreferredSize(
-      preferredSize: (show) ? Size.fromHeight(98.0) : Size.fromHeight(0.0),
-      child: (show)
+      preferredSize: Size.fromHeight(_sizeTween.evaluate(listenable)),
+      child: (_sizeTween.evaluate(listenable) >= 74)
           ? Column(
               children: <Widget>[
                 TabBar(
@@ -85,16 +114,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  @override
-  void initState() {
-    _show = false;
-    isScrollingUp = false;
-    isScollingDown = false;
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
     return DefaultTabController(
@@ -102,21 +121,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: GestureDetector(
         onVerticalDragUpdate: onVerticalDrag,
         child: Scaffold(
-          appBar: AppBar(
-              backgroundColor: Constants.greyColor,
-              title: Text(
-                'Wattza',
-                style: TextStyle(color: Colors.black),
-              ),
-              actions: <Widget>[
-                _ConnexionIcon(wattzaManager),
-              ],
-              bottom: _appBarBottom(_show)),
-          body: (_show)
-              ? TabBarView(
-                  children: [FindDevicesScreen(wattzaManager), Icon(Icons.account_circle)])
-              : widget.body,
-        ),
+            appBar: AppBar(
+                backgroundColor: Constants.greyColor,
+                title: Text(
+                  'Wattza',
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  _ConnexionIcon(wattzaManager),
+                ],
+                bottom: _appBarBottom()),
+            body: (_sizeTween.evaluate(listenable) >= 74)
+                ? TabBarView(children: [
+                    FindDevicesScreen(wattzaManager),
+                    Icon(Icons.account_circle)
+                  ])
+                : body),
       ),
     );
   }

@@ -56,7 +56,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
 
   Widget _buildNoDataPresent(BuildContext context) {
     return Text(
-      "-_-",
+      "- ",
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
         fontSize:

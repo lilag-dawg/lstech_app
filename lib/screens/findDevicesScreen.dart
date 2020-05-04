@@ -11,7 +11,6 @@ import '../models/wattzaDevice.dart';
 import '../constants.dart' as Constants;
 
 class FindDevicesScreen extends StatefulWidget {
-
   final BluetoothDeviceManager wattzaManager;
   FindDevicesScreen(this.wattzaManager);
 
@@ -24,7 +23,6 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   List<DeviceConnexionStatus> devicesConnexionStatus = [];
 
   StreamSubscription<List<ScanResult>> scanSubscription;
-
 
   bool isDoneScanning;
 
@@ -42,7 +40,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
       }
     });
 
-    await getConnectedDevice().then((alreadyConnectedDevices) async{
+    await getConnectedDevice().then((alreadyConnectedDevices) async {
       for (BluetoothDevice d in alreadyConnectedDevices) {
         bool isDeviceAlreadyAdded =
             devicesConnexionStatus.any((device) => device.getDevice == d);
@@ -67,9 +65,9 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   }
 
   Future<void> addWattzaDevice(BluetoothDevice device) async {
-    await WattzaDevice.create(device).then((createdWattzaDevice){
-        widget.wattzaManager.add(createdWattzaDevice);
-      });
+    await WattzaDevice.create(device).then((createdWattzaDevice) {
+      widget.wattzaManager.add(createdWattzaDevice);
+    });
   }
 
   Future<void> _handleOnpressChanged(
@@ -127,7 +125,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
 
   Widget _buildAnimations() {
     return Container(
-      margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: 20),
       child: Column(
         children: <Widget>[
           CircularProgressIndicator(
@@ -145,14 +143,20 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         (isDoneScanning)
             ? Column(
                 children: <Widget>[
-                  Column(children: _buildCustomTiles(devicesConnexionStatus)),
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Column(
+                      children: _buildCustomTiles(devicesConnexionStatus),
+                    ),
+                  ),
                 ],
               )
             : _buildAnimations(),
         (Constants.isWorkingOnEmulator)
             ? RaisedButton(
-              child: Text("Remettre à plus tard"),
-              color: Colors.red, onPressed: () {})
+                child: Text("Remettre à plus tard"),
+                color: Colors.red,
+                onPressed: () {})
             : _buildScanningButton(),
       ]),
     );
@@ -180,7 +184,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
 
   @override
   void dispose() {
-    if(!Constants.isWorkingOnEmulator){
+    if (!Constants.isWorkingOnEmulator) {
       FlutterBlue.instance.stopScan();
       scanSubscription.cancel();
     }
