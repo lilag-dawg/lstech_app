@@ -5,17 +5,17 @@ class SessionSegmentTableModel extends BaseModel {
   static String dbName = 'session_segment_table';
   static String dbFormat = 'CREATE TABLE ' +
       dbName +
-      ' (sessionSegmentId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, segmentType TEXT, startTime TEXT, endTime TEXT, FOREIGN KEY(sessionId) REFERENCES ' +
+      ' (sessionSegmentId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, segmentType TEXT, startTime TEXT, endTime TEXT, ' + SessionTableModel.pkName + ' INTEGER, FOREIGN KEY(sessionId) REFERENCES ' +
       SessionTableModel.dbName +
-      '(' +
+      ' (' +
       SessionTableModel.pkName +
       ') ON DELETE CASCADE)';
 
   int sessionSegmentId;
   String segmentType; //check enum {"pause","training"}
   String startTime; //ISO-8601 YYYY-MM-DD HH:MM:SS.SSS
-  String endTime; //ISO-8601 YYYY-MM-DD HH:MM:SS.SSS
-  String sessionId;
+  String  endTime; //ISO-8601 YYYY-MM-DD HH:MM:SS.SSS
+  int sessionId;
 
   static String primaryKeyWhereString = 'sessionSegmentId = ?';
 

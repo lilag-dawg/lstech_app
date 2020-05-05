@@ -1,12 +1,13 @@
 import '../databases/base_model.dart';
 import '../databases/session_model.dart';
+import 'package:flutter/material.dart';
 
 class ReadingTableModel extends BaseModel {
   static String dbName = 'reading_table';
   static String pkName = 'readingId';
   static String dbFormat = 'CREATE TABLE ' +
       dbName +
-      ' (' + pkName + ' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timeSinceStart TEXT, readingType TEXT, FOREIGN KEY(sessionId) REFERENCES ' +
+      ' (' + pkName + ' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timeSinceStart TEXT, readingType TEXT, ' + SessionTableModel.pkName + 'INTEGER, FOREIGN KEY(sessionId) REFERENCES ' +
       SessionTableModel.dbName +
       '(' +
       SessionTableModel.pkName +
@@ -23,7 +24,7 @@ class ReadingTableModel extends BaseModel {
       {this.readingId,
       this.timeSinceStart,
       this.readingType,
-      this.sessionId,});
+      @required this.sessionId,});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
