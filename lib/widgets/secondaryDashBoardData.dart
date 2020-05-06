@@ -8,7 +8,6 @@ import 'iconTitle.dart';
 class MySecondaryDashBoardData extends StatelessWidget {
   final IconData widgetIcon;
   final String widgetTitle;
-  //final String widgetData;
   final String widgetUnits;
   final StreamPackage widgetData;
 

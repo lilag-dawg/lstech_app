@@ -2,7 +2,8 @@
 class Feature{
   final String featureName;
   final bool status;
-  Feature(this.featureName,this.status);
+  final int value;
+  Feature({this.featureName,this.status,this.value});
 
   get name{
     return featureName;
@@ -10,6 +11,10 @@ class Feature{
 
   get isSupported{
     return status;
+  }
+
+  get valueContent{
+    return value;
   }
 
 }

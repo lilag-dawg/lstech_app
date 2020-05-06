@@ -32,6 +32,11 @@ class BluetoothDeviceService{
         await _getCharacteristicValue(c).then((result) {
           cscFeatures(result);
         });
+        break;
+      case "2A19":
+        await _getCharacteristicValue(c).then((result){
+          features.add(Feature(featureName: "BatteryLevel",status: true, value: result[0]));
+        });
     }
   }
 
@@ -45,8 +50,8 @@ class BluetoothDeviceService{
 
     bool isWheelRevSupported = (flags & 0x01 > 0);
     bool isCrankRevSupported = (flags & 0x02 > 0);
-    features.add(Feature("CrankRev", isCrankRevSupported));
-    features.add(Feature("WheelRev", isWheelRevSupported));
+    features.add(Feature(featureName: "CrankRev", status: isCrankRevSupported));
+    features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
   }
 
   get name{
@@ -62,18 +67,25 @@ class BluetoothDeviceService{
     });
     return isSupported;
   }
+
+  Feature getFeature(String name){
+    Feature selected;
+    features.forEach((f){
+      if(f.name == name){
+        selected = f;
+      }
+    });
+    return selected;
+  }
   BluetoothDeviceCharacteristic getCharacteristic(String name){
     BluetoothDeviceCharacteristic selected;
     characteristics.forEach((c){
       if(c.name == name){
-        switch(name){
-          case "2A5B":
-            selected = c;
-            break;
-        }
+        selected = c;
       }
     });
     return selected;
   }
   
 }
+

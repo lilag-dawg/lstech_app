@@ -11,7 +11,7 @@ import '../constants.dart' as Constants;
 class MyTrainingScreen extends StatelessWidget {
 
   Widget _body(BuildContext context) {
-    final wattza = Provider.of<BluetoothDeviceManager>(context);
+    final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
     return Column(
       children: <Widget>[
         SizedBox(height: 40),
@@ -25,7 +25,7 @@ class MyTrainingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             MySecondaryDashBoardData(
-                Icons.rotate_right, 'CADENCE', wattza.getRpm(), 'RPM'), // 100
+                Icons.rotate_right, 'CADENCE', wattzaManager.getRpmPackage(), 'RPM'), // 100
             MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', null, 'm'), // 120
           ],
         ),
