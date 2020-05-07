@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../widgets/customTile.dart';
 import '../models/deviceConnexionStatus.dart';
@@ -18,13 +19,16 @@ class FindDevicesScreen extends StatefulWidget {
   _FindDevicesScreenState createState() => _FindDevicesScreenState();
 }
 
-class _FindDevicesScreenState extends State<FindDevicesScreen> {
+class _FindDevicesScreenState extends State<FindDevicesScreen>
+    with SingleTickerProviderStateMixin {
   List<BluetoothDevice> alreadyConnectedDevices = [];
   List<DeviceConnexionStatus> devicesConnexionStatus = [];
-
   StreamSubscription<List<ScanResult>> scanSubscription;
-
   bool isDoneScanning;
+
+  //animation stuff
+  Animation<double> animation;
+  AnimationController controller;
 
   Future<void> performScan() async {
     scanSubscription = FlutterBlue.instance.scanResults.listen((scanResults) {
@@ -123,13 +127,48 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         });
   }
 
+  Widget _bycicle() {
+    return Center(
+      child: Container(
+        child: Stack(children: <Widget>[
+          Positioned(
+            child: SvgPicture.asset(
+              "assets/bike_noWheels.svg",
+              width: 300,
+            ),
+          ),
+          Positioned(
+            left: 30,
+            bottom: 5,
+            top: 60,
+            child: SvgPicture.asset(
+              "assets/bike_wheel.svg",
+              width: 90,
+            ),
+          ),
+          Positioned(
+            right: 42,
+            bottom: 5,
+            top: 60,
+            child: SvgPicture.asset(
+              "assets/bike_wheel.svg",
+              width: 90,
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+
   Widget _buildAnimations() {
     return Container(
       margin: EdgeInsets.only(top: 20),
       child: Column(
         children: <Widget>[
-          CircularProgressIndicator(
-            backgroundColor: Colors.black,
+          Center(
+            child: AnimatedLogo(
+              animation: animation,
+            ),
           ),
           Text("Recherche d'un Wattza..."),
         ],
@@ -177,6 +216,17 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   @override
   void initState() {
     startAScan();
+    controller =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    animation = CurvedAnimation(parent: controller, curve: Curves.linear)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          controller.forward();
+        }
+      });
+    controller.forward();
 
     // TODO: implement initState
     super.initState();
@@ -188,7 +238,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
       FlutterBlue.instance.stopScan();
       scanSubscription.cancel();
     }
-
+    controller.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -196,5 +246,84 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
   @override
   Widget build(BuildContext context) {
     return _buildBody(widget.wattzaManager);
+  }
+}
+
+class AnimatedLogo extends AnimatedWidget {
+  AnimatedLogo({Key key, Animation<double> animation})
+      : super(key: key, listenable: animation);
+  static final _animatePedal = Tween<double>(begin: 7, end: 50);
+  static final _animateBike = Tween<double>(begin: -0.05, end: 0.05);
+
+  Widget build(BuildContext context) {
+    final animation = listenable as Animation<double>;
+    return Center(
+      child: Container(
+        height: 200,
+        color: Colors.blue,
+        child: Stack(children: <Widget>[
+              Positioned(
+            child: Container(
+              child: Image.asset("assets/lstech_text_only.jpg"),
+              decoration: BoxDecoration(
+                boxShadow: [BoxShadow(
+                  color:Colors.grey,
+                  blurRadius: 10.0,
+                )]
+              ),
+            ),
+          ),
+            Positioned(
+            left: 0,
+            bottom: 10,
+            child: Transform.rotate(
+                angle: _animateBike.evaluate(animation),
+              child: Container(
+                  alignment: Alignment(0.0, 0.0),
+                  height: 150,
+                  //color: Colors.yellow,
+                  child: Stack(children: <Widget>[
+                    Positioned(
+                      child: Container(
+                        width: 200,
+                        child: Image.asset("assets/lstech_bike_only.jpg"),
+                      ),
+                    ),
+                    Positioned(
+                      left: 105,
+                      bottom: 50,
+                      child: Container(
+                        //color: Colors.red,
+                        alignment: Alignment(0.0, 1.0),
+                        height: 50,
+                        width: 45,
+                        child: Container(
+                          height: _animatePedal.evaluate(animation),
+                          width: 20,
+                          child: Image.asset("assets/lstech_pedal_only.jpg"),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 50,
+                      bottom: 30,
+                      child: Container(
+                        //color: Colors.red,
+                        alignment: Alignment(0.0, -1.0),
+                        height: 50,
+                        width: 45,
+                        child: Container(
+                          height: _animatePedal.evaluate(animation),
+                          width: 20,
+                          child: Image.asset("assets/lstech_pedal_only.jpg"),
+                        ),
+                      ),
+                    )
+                  ])),
+            ),
+          ),
+        ]),
+      ),
+    );
   }
 }
