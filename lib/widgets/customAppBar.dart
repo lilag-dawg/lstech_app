@@ -23,12 +23,19 @@ class _CustomAppBarState extends State<CustomAppBar>
   bool isScrollingUp;
   bool isScollingDown;
 
+  bool isTitledSelected;
+  bool isBluetoothIconSelected;
+  bool isBatteryIconSelected;
+  bool isDrawerSelected;
+
+  TabController _tabController;
   AnimationController controller;
   Animation animation;
 
   void showTabs() {
     controller.forward();
   }
+
   void hideTabs() {
     controller.reverse();
   }
@@ -57,11 +64,55 @@ class _CustomAppBarState extends State<CustomAppBar>
   void initState() {
     isScrollingUp = false;
     isScollingDown = false;
+
+    isTitledSelected = true;
+    isBluetoothIconSelected = false;
+    isBatteryIconSelected = false;
+    isDrawerSelected = false;
+
     controller =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+    _tabController = TabController(vsync: this, length: 4)
+      ..addListener(_handleIndexChange);
     // TODO: implement initState
     super.initState();
+  }
+
+  void _handleIndexChange() {
+    switch (_tabController.index) {
+      case 0:
+        isBluetoothIconSelected = false;
+        isBatteryIconSelected = false;
+        isDrawerSelected = false;
+        setState(() {
+          isTitledSelected = true;
+        });
+        break;
+      case 1:
+        isTitledSelected = false;
+        isBatteryIconSelected = false;
+        isDrawerSelected = false;
+        setState(() {
+          isBluetoothIconSelected = true;
+        });
+        break;
+      case 2:
+        isTitledSelected = false;
+        isBluetoothIconSelected = false;
+        isDrawerSelected = false;
+        setState(() {
+          isBatteryIconSelected = true;
+        });
+        break;
+      case 3:
+        isTitledSelected = false;
+        isBluetoothIconSelected = false;
+        isBatteryIconSelected = false;
+        setState(() {
+          isDrawerSelected = true;
+        });
+    }
   }
 
   Widget build(BuildContext context) {
@@ -69,42 +120,98 @@ class _CustomAppBarState extends State<CustomAppBar>
     return _AnimatedAppBar(
       animation: animation,
       onVerticalDrag: onVerticalDrag,
-      body: widget.body,
+      externBody: widget.body,
       wattzaManager: wattzaManager,
+      tabController: _tabController,
+      isBatteryIconSelected: isBatteryIconSelected,
+      isBluetoothIconSelected: isBluetoothIconSelected,
+      isDrawerSelected: isDrawerSelected,
+      isTitledSelected: isTitledSelected,
+      showTabs: showTabs,
     );
   }
 }
 
 class _AnimatedAppBar extends AnimatedWidget {
   _AnimatedAppBar(
-      {Key key, Animation<double> animation, this.onVerticalDrag, this.body, this.wattzaManager})
+      {Key key,
+      Animation<double> animation,
+      this.tabController,
+      this.onVerticalDrag,
+      this.externBody,
+      this.showTabs,
+      this.isTitledSelected,
+      this.isBatteryIconSelected,
+      this.isBluetoothIconSelected,
+      this.isDrawerSelected,
+      this.wattzaManager})
       : super(key: key, listenable: animation);
 
   final Function(DragUpdateDetails) onVerticalDrag;
   final BluetoothDeviceManager wattzaManager;
-  final Widget body;
+  final Widget externBody;
+  final TabController tabController;
+  final Function() showTabs;
 
-  static final _sizeTween = Tween<double>(begin: 0.0, end: 80.0);
+  final bool isTitledSelected;
+  final bool isBluetoothIconSelected;
+  final bool isBatteryIconSelected;
+  final bool isDrawerSelected;
+
+  static final _sizeTween = Tween<double>(begin: 0.0, end: 15.0);
+
+  Widget _appBarTop(StreamPackage connexionHandler) {
+    return Row(
+      children: <Widget>[
+        _wattzaTitle(isTitledSelected),
+        SizedBox(
+          width: 15,
+        ),
+        _ConnexionIcon(
+            connexionHandler, tabController, showTabs, isBluetoothIconSelected),
+        SizedBox(
+          width: 15,
+        ),
+        _BatteryIcon(
+            connexionHandler, tabController, showTabs, isBatteryIconSelected),
+      ],
+    );
+  }
+
+  Widget _wattzaTitle(bool isTitledSelected) {
+    return GestureDetector(
+      onTap: () {
+        showTabs();
+        tabController.animateTo(0);
+      },
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+          decoration: (isTitledSelected)
+              ? BoxDecoration(
+                  border: Border(
+                  bottom: BorderSide(
+                    color: Colors.black,
+                    width: 2.0,
+                  ),
+                ))
+              : null,
+          child: Text(
+            'Wattza',
+            style: TextStyle(color: Colors.black),
+          )),
+    );
+  }
 
   Widget _appBarBottom() {
     return PreferredSize(
       preferredSize: Size.fromHeight(_sizeTween.evaluate(listenable)),
-      child: (_sizeTween.evaluate(listenable) >= 74)
+      child: (_sizeTween.evaluate(listenable) >= 10)
           ? Column(
               children: <Widget>[
-                TabBar(
-                    labelColor: Colors.black87,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: [
-                      Tab(
-                        icon: Icon(Icons.bluetooth_connected),
-                        text: "Bluetooth",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.account_circle),
-                        text: "Profile",
-                      ),
-                    ]),
+                TabPageSelector(
+                  controller: tabController,
+                  selectedColor: Colors.black,
+                ),
                 Container(
                   height: 0,
                   child: Icon(Icons.arrow_drop_up),
@@ -127,36 +234,55 @@ class _AnimatedAppBar extends AnimatedWidget {
         child: Scaffold(
             appBar: AppBar(
                 backgroundColor: Constants.greyColor,
-                title: Text(
-                  'Wattza',
-                  style: TextStyle(color: Colors.black),
-                ),
+                title: _appBarTop(connexionHandler),
                 actions: <Widget>[
-                  _ConnexionIcon(connexionHandler),
-                  _BatteryIcon(connexionHandler),
-                  //_BatteryIcon(wattzaManager),
+                  Container(
+                    decoration: (isDrawerSelected)
+                        ? BoxDecoration(
+                            border: Border(
+                            bottom: BorderSide(
+                              color: Colors.black,
+                              width: 2.0,
+                            ),
+                          ))
+                        : null,
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.dehaze,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          showTabs();
+                          tabController.animateTo(3);
+                        }),
+                  )
                 ],
                 bottom: _appBarBottom()),
-            body: (_sizeTween.evaluate(listenable) >= 74)
-                ? TabBarView(children: [
+            body: (_sizeTween.evaluate(listenable) >= 10)
+                ? TabBarView(controller: tabController, children: [
+                    Icon(Icons.home),
                     FindDevicesScreen(wattzaManager),
-                    Icon(Icons.account_circle)
+                    Icon(Icons.battery_full),
+                    Icon(Icons.dehaze)
                   ])
-                : body),
+                : externBody),
       ),
     );
   }
 }
 
 class _BatteryIcon extends StatelessWidget {
-
-    final StreamPackage connexionHandler;
-  _BatteryIcon(this.connexionHandler);
+  final StreamPackage connexionHandler;
+  final TabController tabController;
+  final Function() showTabs;
+  final bool isBatteryIconSelected;
+  _BatteryIcon(this.connexionHandler, this.tabController, this.showTabs,
+      this.isBatteryIconSelected);
 
   final double myWidth = 36;
 
-  double ruleOf3(double value){
-    return ((value*myWidth)/100);
+  double ruleOf3(double value) {
+    return ((value * myWidth) / 100);
   }
 
   Widget _buildBatteryIcon(StreamPackage connexionHandler) {
@@ -165,16 +291,26 @@ class _BatteryIcon extends StatelessWidget {
         builder: (c, snapshot) {
           final state = snapshot.data;
           if (state == BluetoothDeviceState.connected) {
-            return _batteryConnected(connexionHandler.getBatteryLevel().toDouble());
+            return _batteryConnected(
+                connexionHandler.getBatteryLevel().toDouble());
           }
           connexionHandler.characteristicStreamingStatus(false);
           return _batteryDisconnected();
         });
   }
 
-  Widget _batteryConnected(double batteryLevel){
+  Widget _batteryConnected(double batteryLevel) {
     return Center(
       child: Container(
+        decoration: (isBatteryIconSelected)
+            ? BoxDecoration(
+                border: Border(
+                bottom: BorderSide(
+                  color: Colors.black,
+                  width: 2.0,
+                ),
+              ))
+            : null,
         padding: EdgeInsets.all(8.0),
         child: Row(children: <Widget>[
           Container(
@@ -191,7 +327,9 @@ class _BatteryIcon extends StatelessWidget {
                 child: Container(
                   width: ruleOf3(batteryLevel),
                   decoration: BoxDecoration(
-                      color: (ruleOf3(batteryLevel) > 10) ? Colors.green : Colors.red,
+                      color: (ruleOf3(batteryLevel) > 10)
+                          ? Colors.green
+                          : Colors.red,
                       borderRadius: (ruleOf3(batteryLevel) != myWidth)
                           ? BorderRadius.only(
                               topLeft: Radius.circular(2),
@@ -200,8 +338,10 @@ class _BatteryIcon extends StatelessWidget {
                 ),
               ),
               Center(
-                child:Text(batteryLevel.toStringAsFixed(0).toString() + " %", style: TextStyle(color:Colors.black87),)
-              )
+                  child: Text(
+                batteryLevel.toStringAsFixed(0).toString() + " %",
+                style: TextStyle(color: Colors.black87, fontSize: 12),
+              ))
             ]),
           ),
           Center(
@@ -219,23 +359,32 @@ class _BatteryIcon extends StatelessWidget {
       ),
     );
   }
-  Widget _batteryDisconnected(){
+
+  Widget _batteryDisconnected() {
     return Center(
       child: Container(
+        decoration: (isBatteryIconSelected)
+            ? BoxDecoration(
+                border: Border(
+                bottom: BorderSide(
+                  color: Colors.black,
+                  width: 2.0,
+                ),
+              ))
+            : null,
         padding: EdgeInsets.all(8.0),
         child: Row(children: <Widget>[
           Container(
-            height: 22,
-            width: myWidth + 2,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(3))),
-            child: Center(
-              child: Text("N/A",style: TextStyle(color: Colors.black))
-            )
-          ),
+              height: 22,
+              width: myWidth + 2,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(3))),
+              child: Center(
+                  child: Text("N/A",
+                      style: TextStyle(color: Colors.black, fontSize: 13)))),
           Center(
             child: Container(
               height: 6,
@@ -251,18 +400,28 @@ class _BatteryIcon extends StatelessWidget {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    return (connexionHandler != null)
-        ? _buildBatteryIcon(connexionHandler)
-        : _batteryDisconnected();
+    return GestureDetector(
+      child: (connexionHandler != null)
+          ? _buildBatteryIcon(connexionHandler)
+          : _batteryDisconnected(),
+      onTap: () {
+        showTabs();
+        tabController.animateTo(2);
+      },
+    );
   }
 }
 
-
 class _ConnexionIcon extends StatelessWidget {
+  final bool isBluetoothIconSelected;
   final StreamPackage connexionHandler;
-  _ConnexionIcon(this.connexionHandler);
+  final TabController tabController;
+  final Function() showTabs;
+  _ConnexionIcon(this.connexionHandler, this.tabController, this.showTabs,
+      this.isBluetoothIconSelected);
 
   Widget _buildBluetoothIcon(StreamPackage connexionHandler) {
     return StreamBuilder<BluetoothDeviceState>(
@@ -270,7 +429,18 @@ class _ConnexionIcon extends StatelessWidget {
         builder: (c, snapshot) {
           final state = snapshot.data;
           if (state == BluetoothDeviceState.connected) {
-            return Icon(Icons.bluetooth_connected, color: Colors.green);
+            return Container(
+              padding: EdgeInsets.all(8.0),
+                decoration: (isBluetoothIconSelected)
+                    ? BoxDecoration(
+                        border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black,
+                          width: 2.0,
+                        ),
+                      ))
+                    : null,
+                child: Icon(Icons.bluetooth_connected, color: Colors.green));
           }
           connexionHandler.characteristicStreamingStatus(false);
           return _buildDeviceDisconnected();
@@ -278,13 +448,31 @@ class _ConnexionIcon extends StatelessWidget {
   }
 
   Widget _buildDeviceDisconnected() {
-    return Icon(Icons.bluetooth_disabled, color: Colors.red);
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Icon(Icons.bluetooth_disabled, color: Colors.red),
+      decoration: (isBluetoothIconSelected)
+          ? BoxDecoration(
+              border: Border(
+              bottom: BorderSide(
+                color: Colors.black,
+                width: 2.0,
+              ),
+            ))
+          : null,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return (connexionHandler != null)
-        ? _buildBluetoothIcon(connexionHandler)
-        : _buildDeviceDisconnected();
+    return GestureDetector(
+      child: (connexionHandler != null)
+          ? _buildBluetoothIcon(connexionHandler)
+          : _buildDeviceDisconnected(),
+      onTap: () {
+        showTabs();
+        tabController.animateTo(1);
+      },
+    );
   }
 }
