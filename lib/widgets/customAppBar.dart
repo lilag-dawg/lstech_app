@@ -20,6 +20,7 @@ class CustomAppBar extends StatefulWidget {
 
 class _CustomAppBarState extends State<CustomAppBar>
     with TickerProviderStateMixin {
+      
   bool isScrollingUp;
   bool isScollingDown;
 
@@ -33,26 +34,26 @@ class _CustomAppBarState extends State<CustomAppBar>
   Animation animation;
 
   void showTabs() {
+    isScollingDown = true;
+    isScrollingUp = false;
     controller.forward();
   }
 
   void hideTabs() {
+    isScollingDown = false;
+    isScrollingUp = true;
     controller.reverse();
   }
 
   void onVerticalDrag(DragUpdateDetails details) {
     if (details.delta.dy > 3) {
       if (!isScollingDown) {
-        isScollingDown = true;
-        isScrollingUp = false;
         showTabs();
         //print("going down");
       }
     }
     if (details.delta.dy < -3) {
       if (!isScrollingUp) {
-        isScollingDown = false;
-        isScrollingUp = true;
         hideTabs();
         //print("going up");
       }
