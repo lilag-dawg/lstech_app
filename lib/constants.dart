@@ -12,4 +12,4 @@ var greyColorSelected = Colors.grey[400];
 // set in navigationBar.dart with global variables
 
 // emulator
-final bool isWorkingOnEmulator = false;
+final bool isWorkingOnEmulator = true;
