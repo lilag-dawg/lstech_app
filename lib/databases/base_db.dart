@@ -1,75 +1,114 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:path/path.dart';
 import '../databases/base_model.dart';
-import 'package:flutter/material.dart';
 
-class BaseDB {
-  Database _db;
+class DatabaseProvider {
+  DatabaseProvider._();
+  static final DatabaseProvider provider = DatabaseProvider._();
+  static Database _database;
 
   static int get _version => 1; //onCreate
+  static final String databaseName = 'LSTechDatabase.db';
 
-  String dbFormat;
-  String dbName;
+  static Future<Database> get database async {
+    if (_database != null) return _database;
 
-  BaseDB({@required this.dbFormat, @required this.dbName});
-
-  Future<void> init() async {
-    if (_db != null) {
-      return;
-    }
-
-    try {
-      String _dbPath = await getDatabasesPath() + '/' + dbName + '.db';
-      print(_dbPath);
-      print('executing : openDatabase');
-      _db = await openDatabase(_dbPath,
-          version: _version, onCreate: create, onConfigure: _onConfigure);
-    } catch (ex) {
-      print(ex);
-    }
+    _database = await init();
+    return _database;
   }
 
-  Future<void> deletePermanent() async {
-    if (_db == null) {
+  static Future<Database> init() async {
+    return await openDatabase(join(await getDatabasesPath(), databaseName),
+        version: _version, onCreate: create, onConfigure: _onConfigure);
+  }
+
+  static Future<void> eraseDatabase() async {
+    if (_database == null) {
       return;
     }
 
-    try {
-      String _dbPath = await getDatabasesPath() + '/' + dbName + '.db';
-      print('executing : deleteDatabase');
-      await deleteDatabase(_dbPath);
-      _db = null;
-    } catch (ex) {
-      print(ex);
-    }
+    await deleteDatabase(join(await getDatabasesPath(), databaseName));
+    _database = null;
+
+    return;
   }
 
   static Future _onConfigure(Database db) async {
-    print('executing : PRAGMA foreign_keys = ON');
-    //await db.execute('PRAGMA legacy_alter_table = OFF');
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
-  void create(Database db, int version) async {
-    print('executing : ' + dbFormat);
-    await db.execute(dbFormat);
+  static void create(Database db, int version) async {
+    print('executing : CREATE TABLES');
+    await db.execute('''
+    CREATE TABLE session_table (
+      sessionId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+      elapsedTime TEXT, 
+      sessionType TEXT
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE session_segment_table (
+      sessionSegmentId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+      segmentType TEXT, 
+      startTime INTEGER, 
+      endTime INTEGER, 
+      sessionId INTEGER, 
+      FOREIGN KEY(sessionId) REFERENCES session_table(sessionId) ON DELETE CASCADE
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE reading_table (
+      readingId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+      timeSinceStart TEXT, 
+      readingType TEXT, 
+      sessionId INTEGER, 
+      FOREIGN KEY(sessionId) REFERENCES session_table(sessionId) ON DELETE CASCADE
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE cadence_reading_table (
+      value INTEGER, 
+      readingId INTEGER,
+      FOREIGN KEY(readingId) REFERENCES reading_table(readingId) ON DELETE CASCADE
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE power_reading_table (
+      value INTEGER, 
+      readingId INTEGER,
+      FOREIGN KEY(readingId) REFERENCES reading_table(readingId) ON DELETE CASCADE
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE gps_reading_table (
+      latitude INTEGER, 
+      longitude INTEGER, 
+      readingId INTEGER,
+      FOREIGN KEY(readingId) REFERENCES reading_table(readingId) ON DELETE CASCADE
+    );
+    ''');
   }
 
-  Future<List<Map<String, dynamic>>> query(String name) async =>
-      await _db.query(name);
+  static Future<List<Map<String, dynamic>>> query(String name) async =>
+      await _database.query(name);
 
-  Future<int> insert(String name, BaseModel model) async {
-    print('inserting : ');
-    print(model.toMap());
-    await _db.insert(name, model.toMap());
-  }
+  static Future<void> insert(String name, BaseModel model) async =>
+      await _database.insert(name, model.toMap());
 
-  Future<int> deleteAll(String name) async => await _db.delete(name);
+  static Future<int> deleteTableData(String name) async =>
+      await _database.delete(name);
 
-  Future<List<Map<String, dynamic>>> queryByParameter(
+  static Future<List<Map<String, dynamic>>> queryByParameter(
       String table, String whereString, dynamic parameter) async {
-    var query =
-        await _db.query(table, where: whereString, whereArgs: [parameter]);
+    var query = await _database
+        .query(table, where: whereString, whereArgs: [parameter]);
     if (query.length != 0) {
       return query;
     } else {

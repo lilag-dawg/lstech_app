@@ -1,21 +1,12 @@
 import '../databases/base_model.dart';
-import '../databases/reading_model.dart';
 
 class GPSReadingTableModel extends BaseModel {
-  static String dbName = 'gps_reading_table';
-  static String dbFormat = 'CREATE TABLE ' +
-      dbName +
-      ' (latitude INTEGER, longitude INTEGER, FOREIGN KEY(readingId) REFERENCES ' +
-      ReadingTableModel.dbName +
-      '(' +
-      ReadingTableModel.pkName +
-      ') ON DELETE CASCADE)';
 
   int latitude;
   int longitude;
   int readingId;
 
-  static String primaryKeyWhereString = ReadingTableModel.pkName + ' = ?';
+  static String primaryKeyWhereString = 'readingId = ?';
 
   GPSReadingTableModel({
     this.latitude,

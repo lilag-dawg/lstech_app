@@ -1,13 +1,12 @@
 import '../databases/base_model.dart';
-import '../databases/reading_model.dart';
 
-class BaseReadingTableModel extends BaseModel {
+class StandardReadingTableModel extends BaseModel {
   int value;
   int readingId;
 
-  static String primaryKeyWhereString = ReadingTableModel.pkName + ' = ?';
+  static String primaryKeyWhereString = 'readingId = ?';
 
-  BaseReadingTableModel({
+  StandardReadingTableModel({
     this.value,
     this.readingId,
   });
@@ -20,8 +19,8 @@ class BaseReadingTableModel extends BaseModel {
     return map;
   }
 
-  static BaseReadingTableModel fromMap(Map<String, dynamic> map) {
-    return BaseReadingTableModel(
+  static StandardReadingTableModel fromMap(Map<String, dynamic> map) {
+    return StandardReadingTableModel(
       value: map['value'],
       readingId: map['readingId'],
     );

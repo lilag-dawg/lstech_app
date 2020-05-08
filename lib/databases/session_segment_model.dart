@@ -1,20 +1,13 @@
 import '../databases/base_model.dart';
-import '../databases/session_model.dart';
 
 class SessionSegmentTableModel extends BaseModel {
-  static String dbName = 'session_segment_table';
-  static String dbFormat = 'CREATE TABLE ' +
-      dbName +
-      ' (sessionSegmentId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, segmentType TEXT, startTime TEXT, endTime TEXT, ' + SessionTableModel.pkName + ' INTEGER, FOREIGN KEY(sessionId) REFERENCES ' +
-      SessionTableModel.dbName +
-      ' (' +
-      SessionTableModel.pkName +
-      ') ON DELETE CASCADE)';
+
+  static String tableName = 'session_segment_table';
 
   int sessionSegmentId;
   String segmentType; //check enum {"pause","training"}
-  String startTime; //ISO-8601 YYYY-MM-DD HH:MM:SS.SSS
-  String  endTime; //ISO-8601 YYYY-MM-DD HH:MM:SS.SSS
+  int startTime; //millisecondsSinceEpoch
+  int endTime; //millisecondsSinceEpoch
   int sessionId;
 
   static String primaryKeyWhereString = 'sessionSegmentId = ?';

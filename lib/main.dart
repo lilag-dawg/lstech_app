@@ -6,10 +6,11 @@ import 'package:lstech_app/widgets/navigationBar.dart';
 
 //var session_table = new BaseDB(
 //    dbFormat: SessionTableModel.dbFormat, dbName: SessionTableModel.dbName);
-
+//var _dbProvider = DatabaseProvider();
 void main() {
   //var testing = new TestDBHelper();
   //testing.initSession();
+  //var _db = DatabaseProvider.database;
   runApp(MyApp());
 }
 //void main() => runApp(MyApp());
