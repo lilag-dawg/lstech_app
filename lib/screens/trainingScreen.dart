@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/customAppBar.dart';
 import '../widgets/secondaryDashBoardData.dart';
-import '../widgets/powerDisplay.dart';
+import '../widgets/primaryDashBoardData.dart';
 
 import 'package:provider/provider.dart';
 import '../models/bluetoothDeviceManager.dart';
@@ -19,7 +19,7 @@ class MyTrainingScreen extends StatelessWidget {
           Row(
             children: <Widget>[
               SizedBox(width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
-              MyPowerDisplay(),
+              MyPrimaryDashBoardData(),
             ],
           ),
           Row(

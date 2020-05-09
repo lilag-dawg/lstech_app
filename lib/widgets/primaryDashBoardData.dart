@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'iconTitle.dart';
-import 'powerDashBoard.dart';
+import 'primaryDashBoardUI.dart';
 
-class MyPowerDisplay extends StatelessWidget {
+class MyPrimaryDashBoardData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +15,7 @@ class MyPowerDisplay extends StatelessWidget {
           Row(
             children: <Widget>[
               SizedBox(width:MediaQuery.of(context).size.width*(0.8/5.5)),
-              MyPowerDashBoard(),
+              MyPrimaryDashBoardUI(),
             ],
           ),
         ],
