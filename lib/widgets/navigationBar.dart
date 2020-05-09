@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lstech_app/screens/trainingSummaryScreen.dart';
 
 import '../screens/homeScreen.dart';
 import '../screens/trainingScreen.dart';
@@ -22,8 +23,20 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   void _onItemTapped(int selected) {
     setState(() {
+      //_currentPage.animateToPage(selected, duration: Duration(milliseconds: 500), curve: Curves.ease);
       _currentPage.jumpToPage(selected);
     });
+  }
+
+
+  void onHorizontalDrag(DragUpdateDetails details) {
+    if (details.delta.dx > 3) {
+      print("going left");
+    }
+    if (details.delta.dx < -3) {
+      print("going right");
+    }
+    print(details.delta.dx);
   }
 
   @override
@@ -33,7 +46,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
     _children = [
       MyHomeScreen(),
-      MyTrainingScreen(),
+      MyTrainingScreen(_currentPage, _onItemTapped),
       MyHistoryScreen(),
     ];
 
@@ -41,6 +54,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       body: PageView(
         children: _children,
         controller: _currentPage,
+        onPageChanged: (index){
+          _onItemTapped(index);
+        },
       ),
       bottomNavigationBar:
           LowerNavigationBar(_currentPage, null, _onItemTapped),
