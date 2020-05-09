@@ -1,11 +1,6 @@
 import '../databases/base_model.dart';
 
 class WattzaTableModel extends BaseModel {
-  static String dbName = 'users_table';
-  static String dbFormat = 'CREATE TABLE ' +
-      dbName +
-      ' (uniqueId TEXT PRIMARY KEY NOT NULL, birthdate TEXT, sex TEXT, height INTEGER, weight INTEGER, city TEXT)';
-
   String uniqueId;
   String localName;
 

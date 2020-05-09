@@ -1,11 +1,6 @@
 import '../databases/base_model.dart';
 
 class UserTableModel extends BaseModel {
-  static String dbName = 'user_table';
-  static String dbFormat = 'CREATE TABLE ' +
-      dbName +
-      ' (userId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, birthdate TEXT, sex TEXT, height INTEGER, weight INTEGER, city TEXT)';
-
   int userId;
   String birthdate; //ISO-8601
   String sex;

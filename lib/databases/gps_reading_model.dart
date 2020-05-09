@@ -1,6 +1,7 @@
 import '../databases/base_model.dart';
 
 class GPSReadingTableModel extends BaseModel {
+  static String tableName = 'gps_reading_table';
 
   int latitude;
   int longitude;

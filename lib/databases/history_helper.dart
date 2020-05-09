@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'package:lstech_app/databases/gps_reading_model.dart';
+
 import '../databases/session_model.dart';
+import '../databases/reading_model.dart';
+import '../databases/standard_reading_model.dart';
 import '../databases/session_segment_model.dart';
 import '../databases/base_db.dart';
 
@@ -9,13 +13,13 @@ abstract class HistoryHelper {
     //await DatabaseProvider.eraseDatabase();
     //await DatabaseProvider.database;
 
-    SessionTableModel test = SessionTableModel(sessionType: 'intervals');
+    var test = SessionTableModel(sessionType: 'intervals');
     await DatabaseProvider.insert(SessionTableModel.tableName, test);
 
     var queriedSessions =
         await DatabaseProvider.query(SessionTableModel.tableName);
 
-    if (queriedSessions.length > 16) {
+    if (queriedSessions.length > 100) {
       await DatabaseProvider.deleteTableData(SessionTableModel.tableName);
     }
 
@@ -28,18 +32,61 @@ abstract class HistoryHelper {
       int endValue = DateTime.now().millisecondsSinceEpoch +
           1000000 * queriedSessions.length;
 
-      SessionSegmentTableModel segmentTest = SessionSegmentTableModel(
+      var segmentTest = SessionSegmentTableModel(
           segmentType: 'training',
           startTime: startValue,
           endTime: endValue,
           sessionId: queriedSessions[queriedSessions.length - 1]['sessionId']);
       await DatabaseProvider.insert(
           SessionSegmentTableModel.tableName, segmentTest);
-    }
 
-    var queriedSessionSegment =
-        await DatabaseProvider.query(SessionSegmentTableModel.tableName);
-    //print(queriedSessionSegment);
+      for (int i = 0; i < 100; i++) {
+        var readingTest = ReadingTableModel(
+            timeOfReading: startValue + i * 500,
+            readingType: ReadingTableModel.powerTypeString,
+            sessionId: queriedSessions[queriedSessions.length - 1]
+                ['sessionId']);
+        await DatabaseProvider.insert(ReadingTableModel.tableName, readingTest);
+
+        var queriedreadings =
+            await DatabaseProvider.query(ReadingTableModel.tableName);
+
+        var powerReading = StandardReadingTableModel(
+            value: i,
+            readingId: queriedreadings[queriedreadings.length - 1]
+                ['readingId']);
+        await DatabaseProvider.insert(
+            StandardReadingTableModel.powerTableName, powerReading);
+
+        readingTest = ReadingTableModel(
+            timeOfReading: startValue + i * 700,
+            readingType: ReadingTableModel.cadenceTypeString,
+            sessionId: queriedSessions[queriedSessions.length - 1]
+                ['sessionId']);
+        await DatabaseProvider.insert(ReadingTableModel.tableName, readingTest);
+
+        queriedreadings =
+            await DatabaseProvider.query(ReadingTableModel.tableName);
+
+        var cadenceReading = StandardReadingTableModel(
+            value: i % 7,
+            readingId: queriedreadings[queriedreadings.length - 1]
+                ['readingId']);
+        await DatabaseProvider.insert(
+            StandardReadingTableModel.cadenceTableName, cadenceReading);
+      }
+      var powerTest = await getStatisticsFromReadingsType(
+          queriedSessions[queriedSessions.length - 1]['sessionId'],
+          ReadingTableModel.powerTypeString);
+
+      print(powerTest);
+
+      var cadenceTest = await getStatisticsFromReadingsType(
+          queriedSessions[queriedSessions.length - 1]['sessionId'],
+          ReadingTableModel.cadenceTypeString);
+
+      print(cadenceTest);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +115,129 @@ abstract class HistoryHelper {
       'durations': listOfSessionDurations,
       'sessionId': sessionDIds,
     };
+  }
+
+/*
+getStatisticsFromReadingsType : 
+  - for cadence and power, return average and max values for a specific sessionId
+  - gps not yet supported
+*/
+
+  static Future<Map<String, dynamic>> getStatisticsFromReadingsType(
+      int sessionId, String readingType) async {
+    var valuesList = await getListOfTimesAndReadings(sessionId, readingType);
+
+    int maxValue = 0;
+    int sumOfValues = 0;
+    int averageValue = 0;
+
+    if (valuesList != null) {
+      if (valuesList.length > 0) {
+        if (readingType == ReadingTableModel.cadenceTypeString ||
+            readingType == ReadingTableModel.powerTypeString) {
+          valuesList.forEach((f) {
+            sumOfValues += f['value'];
+            if (f['value'] > maxValue) {
+              maxValue = f['value'];
+            }
+          });
+
+          averageValue = sumOfValues ~/ valuesList.length;
+          return {'maxValue': maxValue, 'averageValue': averageValue};
+        } else if (readingType == ReadingTableModel.gpsTypeString) {
+          //TODO : add support for gps
+          return null;
+        }
+      }
+    }
+    return null;
+  }
+
+/*
+getListOfTimesAndReadings : 
+  - finds all readings associated to a sessionId
+  - keeps readings of desired type
+  - returns a list of every reading of desired type for the session with their respective time of recording
+*/
+  static Future<List<Map<String, dynamic>>> getListOfTimesAndReadings(
+      int sessionId, String readingType) async {
+    var readingsList = await DatabaseProvider.queryByParameter(
+        ReadingTableModel.tableName, 'sessionId = ?', sessionId);
+
+    var timesAndReadingsList = List<Map<String, dynamic>>();
+    if (readingsList != null) {
+      for (int i = 0; i < readingsList.length; i++) {
+        if (readingsList[i]['readingType'] == readingType) {
+          timesAndReadingsList
+              .add(await associateTimeAndReadingValues(readingsList[i]));
+        }
+      }
+    }
+    return timesAndReadingsList;
+  }
+
+/*
+getTableNameFromReadingType : 
+  - Returns the name of the table where the values of the selected readingType are stored
+*/
+  static String getTableNameFromReadingType(String type) {
+    String tableName;
+    switch (type) {
+      case ReadingTableModel.cadenceTypeString:
+        tableName = StandardReadingTableModel.cadenceTableName;
+        break;
+      case ReadingTableModel.powerTypeString:
+        tableName = StandardReadingTableModel.powerTableName;
+        break;
+      case ReadingTableModel.gpsTypeString:
+        tableName = GPSReadingTableModel.tableName;
+        break;
+      default:
+        return null;
+    }
+    return tableName;
+  }
+
+/*
+associateTimeAndReadingValues : 
+  - Returns a Map where a specific reading value is associated to its time of recording
+*/
+  static Future<Map<String, dynamic>> associateTimeAndReadingValues(
+      Map<String, dynamic> readingMap) async {
+    var reading = ReadingTableModel.fromMap(readingMap);
+
+    var tableName = getTableNameFromReadingType(reading.readingType);
+    var readingValueList = await DatabaseProvider.queryByParameter(
+        tableName, ReadingTableModel.primaryKeyWhereString, reading.readingId);
+
+    if (readingValueList != null) {
+      switch (reading.readingType) {
+        case ReadingTableModel.cadenceTypeString:
+          var readingValue =
+              StandardReadingTableModel.fromMap(readingValueList[0]);
+          return {
+            'timeOfReading': reading.timeOfReading,
+            'value': readingValue.value
+          };
+        case ReadingTableModel.powerTypeString:
+          var readingValue =
+              StandardReadingTableModel.fromMap(readingValueList[0]);
+          return {
+            'timeOfReading': reading.timeOfReading,
+            'value': readingValue.value
+          };
+        case ReadingTableModel.gpsTypeString:
+          var readingValue = GPSReadingTableModel.fromMap(readingValueList[0]);
+          return {
+            'timeOfReading': reading.timeOfReading,
+            'latitude': readingValue.latitude,
+            'longitude': readingValue.longitude
+          };
+        default:
+          break;
+      }
+    }
+    return null;
   }
 
   static Future<String> getTimeSpentTraining(int sessionId) async {

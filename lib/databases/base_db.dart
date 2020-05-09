@@ -40,7 +40,6 @@ class DatabaseProvider {
   }
 
   static void create(Database db, int version) async {
-    print('executing : CREATE TABLES');
     await db.execute('''
     CREATE TABLE session_table (
       sessionId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
@@ -63,7 +62,7 @@ class DatabaseProvider {
     await db.execute('''
     CREATE TABLE reading_table (
       readingId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-      timeSinceStart TEXT, 
+      timeOfReading int, 
       readingType TEXT, 
       sessionId INTEGER, 
       FOREIGN KEY(sessionId) REFERENCES session_table(sessionId) ON DELETE CASCADE
@@ -92,6 +91,24 @@ class DatabaseProvider {
       longitude INTEGER, 
       readingId INTEGER,
       FOREIGN KEY(readingId) REFERENCES reading_table(readingId) ON DELETE CASCADE
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE user_table (
+      userId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      birthdate TEXT, 
+      sex TEXT, 
+      height INTEGER, 
+      weight INTEGER, 
+      city TEXT
+    );
+    ''');
+
+    await db.execute('''
+    CREATE TABLE wattza_table (
+    uniqueId TEXT PRIMARY KEY NOT NULL, 
+    localName TEXT
     );
     ''');
   }

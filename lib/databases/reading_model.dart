@@ -1,20 +1,32 @@
 import '../databases/base_model.dart';
 import 'package:flutter/material.dart';
 
+ /*enum readingTypes {
+  gps,
+  power,
+  cadence,
+}*/
+
 class ReadingTableModel extends BaseModel {
+  static String tableName = 'reading_table';
 
   int readingId;
-  String timeOfReading; //millisecondsSinceEpoch
-  String readingType; //check enum {"GPS","POWER","CADENCE"}
-  String sessionId;
+  int timeOfReading; //millisecondsSinceEpoch
+  String readingType; //check enum {"gps","power","cadence"} 
+  int sessionId;
+
+  static const String cadenceTypeString = 'cadence';
+  static const String powerTypeString = 'power';
+  static const String gpsTypeString = 'gps';
 
   static String primaryKeyWhereString = 'readingId = ?';
 
-  ReadingTableModel(
-      {this.readingId,
-      this.timeOfReading,
-      this.readingType,
-      @required this.sessionId,});
+  ReadingTableModel({
+    this.readingId,
+    this.timeOfReading,
+    this.readingType,
+    @required this.sessionId,
+  });
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
