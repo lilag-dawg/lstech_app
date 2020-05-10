@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lstech_app/widgets/trainingDrawerHalfCircle.dart';
 import 'package:provider/provider.dart';
 
 import 'trainingSummaryScreen.dart';
@@ -21,10 +22,7 @@ Widget _endButton(BuildContext context, PageController _currentPage, Function se
       ],
     ),
     onPressed: (){
-            Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyTrainingScreenSummary(_currentPage, selectHandler)),
-      );
+            Navigator.push(context,MaterialPageRoute(builder: (context) => MyTrainingScreenSummary(_currentPage, selectHandler)),);
     }
   );
 }
@@ -70,15 +68,13 @@ class MyTrainingScreen extends StatelessWidget {
               MySecondaryDashBoardData(Icons.favorite, 'FRÉQUENCE CARDIAQUE', null, 'BPM'), // 12.5
             ],
           ),
-          Stack(
-            children: <Widget>[
-              MyTrainingDrawer(),
-              Positioned(
-                top: 50,
-                left: 160,
-                child: _endButton(context, _currentPage, selectHandler)
-              )
-            ],
+          Container(
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+            child: Align(
+              alignment: Alignment.topCenter,
+                child: MyArc(MediaQuery.of(context).size.width, _currentPage, selectHandler)
+            ),
           ),
         ],
       ),

@@ -86,6 +86,7 @@ class MyTrainingScreenSummary extends StatelessWidget {
 }
 
 Widget _dataSummary (BuildContext context, IconData icon, String title, String dataMax, String dataAvg, String units, bool isUnfoldMore){
+  
   return Container(
     child: Row(
       children: <Widget>[
