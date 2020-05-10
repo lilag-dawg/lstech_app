@@ -6,6 +6,11 @@ import '../databases/history_helper.dart';
 class MyHistoryScreen extends StatefulWidget {
   @override
   _MyHistoryScreenState createState() => _MyHistoryScreenState();
+
+  final PageController currentPage;
+  final Function selectHandler;
+
+  MyHistoryScreen(this.currentPage, this.selectHandler);
 }
 
 class _MyHistoryScreenState extends State<MyHistoryScreen> {
@@ -13,7 +18,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
   SingleChildScrollView historyList;
 
   Future<Widget> buildHistory() async {
-    //await HistoryHelper.testDB();
+    await HistoryHelper.testDB();
     List<Widget> sessions = List<Widget>();
     sessions.add(Container(
       child: Text(
@@ -30,26 +35,32 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
   }
 
   Future<Widget> loadSessions(List<Widget> sessions) async {
-    Map<String, List<dynamic>> sessionTimes =
+    var sessionsDataList =
         await HistoryHelper.getListOfStartTimesAndDurations();
 
-    for (int i = (sessionTimes['startTimes'].length - 1); i >= 0; i--) {
-      var indexSeconds = sessionTimes['startTimes'][i].indexOf('.');
+    var usedColor = Constants.greyColor;
+    sessionsDataList.forEach((s) {
+      var indexSeconds = DateTime.fromMillisecondsSinceEpoch(s['startTime'])
+            .toString().indexOf('.');
 
       sessions.add(SingleSession(
-          timeString:
-              sessionTimes['startTimes'][i].substring(0, indexSeconds - 3),
-          resultString: '---.- km in ' +
-              sessionTimes['durations'][i].split('.')[0] +
-              ' - xxx Calories', // - 3),
-          buttonColor:
-              i % 2 == 0 ? Constants.greyColor : Constants.greyColorSelected));
+        '---.- km in ' + s['duration'].split('.')[0] + ' - xxx Calories',
+        DateTime.fromMillisecondsSinceEpoch(s['startTime'])
+            .toString()
+            .substring(0, indexSeconds - 3),
+        usedColor == Constants.greyColor
+            ? Constants.greyColorSelected
+            : Constants.greyColor,
+        widget.currentPage,
+        widget.selectHandler,
+        s,
+      ));
 
       if (context != null) {
         sessions
             .add(SizedBox(height: MediaQuery.of(context).size.width * 0.03));
       }
-    }
+    });
 
     historyList = SingleChildScrollView(
         child: Column(
@@ -69,7 +80,6 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
           title: Text(

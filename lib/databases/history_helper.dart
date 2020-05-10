@@ -6,6 +6,7 @@ import '../databases/reading_model.dart';
 import '../databases/standard_reading_model.dart';
 import '../databases/session_segment_model.dart';
 import '../databases/base_db.dart';
+import '../widgets/statisticsChart.dart';
 
 abstract class HistoryHelper {
   static Future<void> testDB() async {
@@ -42,7 +43,7 @@ abstract class HistoryHelper {
 
       for (int i = 0; i < 100; i++) {
         var readingTest = ReadingTableModel(
-            timeOfReading: startValue + i * 500,
+            timeOfReading: startValue + i * 70000,
             readingType: ReadingTableModel.powerTypeString,
             sessionId: queriedSessions[queriedSessions.length - 1]
                 ['sessionId']);
@@ -50,6 +51,7 @@ abstract class HistoryHelper {
 
         var queriedreadings =
             await DatabaseProvider.query(ReadingTableModel.tableName);
+        //print(queriedreadings);
 
         var powerReading = StandardReadingTableModel(
             value: i,
@@ -59,7 +61,7 @@ abstract class HistoryHelper {
             StandardReadingTableModel.powerTableName, powerReading);
 
         readingTest = ReadingTableModel(
-            timeOfReading: startValue + i * 700,
+            timeOfReading: startValue + i * 50000,
             readingType: ReadingTableModel.cadenceTypeString,
             sessionId: queriedSessions[queriedSessions.length - 1]
                 ['sessionId']);
@@ -92,29 +94,29 @@ abstract class HistoryHelper {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///
 
-  static Future<Map<String, List<dynamic>>>
+/*
+getListOfStartTimesAndDurations : 
+  - Returns a list of all stored sessions with their durations and start times
+  - The list goes from youngest to oldest session
+*/
+
+  static Future<List<Map<String, dynamic>>>
       getListOfStartTimesAndDurations() async {
     await DatabaseProvider.database;
     var sessionsList =
         await DatabaseProvider.query(SessionTableModel.tableName);
 
-    List<String> listOfSessionStartTimes = List<String>();
-    List<String> listOfSessionDurations = List<String>();
-    List<int> sessionDIds = List<int>();
+    var sessionsDataList = List<Map<String, dynamic>>();
     if (sessionsList != null) {
-      for (int i = 0; i < sessionsList.length; i++) {
-        listOfSessionStartTimes
-            .add(await getSessionStartTime(sessionsList[i]['sessionId']));
-        listOfSessionDurations
-            .add(await getTimeSpentTraining(sessionsList[i]['sessionId']));
-        sessionDIds.add(sessionsList[i]['sessionId']);
+      for (int i = sessionsList.length - 1; i >= 0; i--) {
+        sessionsDataList.add({
+          'startTime': await getSessionStartTime(sessionsList[i]['sessionId']),
+          'duration': await getTimeSpentTraining(sessionsList[i]['sessionId']),
+          'sessionId': sessionsList[i]['sessionId'],
+        });
       }
     }
-    return {
-      'startTimes': listOfSessionStartTimes,
-      'durations': listOfSessionDurations,
-      'sessionId': sessionDIds,
-    };
+    return sessionsDataList;
   }
 
 /*
@@ -260,7 +262,7 @@ associateTimeAndReadingValues :
     return Duration(milliseconds: timeSpentTraining).toString();
   }
 
-  static Future<String> getSessionStartTime(int sessionId) async {
+  static Future<int> getSessionStartTime(int sessionId) async {
     var sessionSegmentsList = await DatabaseProvider.queryByParameter(
         SessionSegmentTableModel.tableName, 'sessionId = ?', sessionId);
 
@@ -276,6 +278,47 @@ associateTimeAndReadingValues :
       }
     }
 
-    return DateTime.fromMillisecondsSinceEpoch(earliestTime).toString();
+    //return DateTime.fromMillisecondsSinceEpoch(earliestTime).toString();
+    return earliestTime;
+  }
+
+  static Future<List<Reading>> getChartValues(
+      int sessionId, String readingType) async {
+    await DatabaseProvider.database;
+    var sessionsList = await DatabaseProvider.queryByParameter(
+        SessionTableModel.tableName,
+        SessionTableModel.primaryKeyWhereString,
+        sessionId);
+    var valuesList = await getListOfTimesAndReadings(sessionId, readingType);
+
+    int startTime;
+    if (sessionsList != null) {
+      startTime = await getSessionStartTime(sessionsList[0]['sessionId']);
+    }
+
+    if (sessionsList != null && valuesList != null) {
+      switch (readingType) {
+        case ReadingTableModel.cadenceTypeString:
+          var chartValues = List<Reading>();
+          valuesList.forEach((v) {
+            var time = Duration(milliseconds: v['timeOfReading'] - startTime);
+            chartValues.add(Reading(time.inMinutes, v['value']));
+          });
+          return chartValues;
+
+        case ReadingTableModel.powerTypeString:
+          var chartValues = List<Reading>();
+          valuesList.forEach((v) {
+            var time = Duration(milliseconds: v['timeOfReading'] - startTime);
+            chartValues.add(Reading(time.inMinutes, v['value']));
+          });
+          return chartValues;
+        case ReadingTableModel.gpsTypeString:
+          return null;
+        default:
+          return null;
+      }
+    }
+    return null;
   }
 }

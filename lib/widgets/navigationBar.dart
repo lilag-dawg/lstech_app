@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lstech_app/screens/trainingSummaryScreen.dart';
-
 import '../screens/homeScreen.dart';
 import '../screens/trainingScreen.dart';
 import '../screens/historyScreen.dart';
@@ -47,7 +45,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     _children = [
       MyHomeScreen(),
       MyTrainingScreen(_currentPage, _onItemTapped),
-      MyHistoryScreen(),
+      MyHistoryScreen(_currentPage, _onItemTapped),
     ];
 
     return Scaffold(

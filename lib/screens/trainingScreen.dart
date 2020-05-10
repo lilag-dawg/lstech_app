@@ -21,10 +21,10 @@ Widget _endButton(BuildContext context, PageController _currentPage, Function se
       ],
     ),
     onPressed: (){
-            Navigator.push(
+            /*Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MyTrainingScreenSummary(_currentPage, selectHandler)),
-      );
+      MaterialPageRoute(builder: (context) => MyTrainingScreenSummary(_currentPage, selectHandler, 1)),
+      );*/
     }
   );
 }
