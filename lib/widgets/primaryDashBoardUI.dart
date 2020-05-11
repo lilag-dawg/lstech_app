@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart' as Constants;
 
-class MyPowerDashBoard extends StatelessWidget {
+class MyPrimaryDashBoardUI extends StatelessWidget {
 
   final String data = '20';
   final String units = 'Watts';
@@ -49,7 +49,7 @@ class MyPowerDashBoard extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Constants.backGroundColor,
               shape: BoxShape.circle
             ),
           ),
