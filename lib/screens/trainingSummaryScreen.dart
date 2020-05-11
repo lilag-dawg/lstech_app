@@ -3,18 +3,13 @@ import 'package:lstech_app/widgets/iconTitle.dart';
 
 import '../widgets/lowerNavigationBar.dart';
 import '../widgets/customAppBar.dart';
-//import '../widgets/charts.dart';
-//import '../widgets/charts2.dart';
-//import '../widgets/charts5.dart';
 
 import '../constants.dart' as Constants;
 import '../databases/history_helper.dart';
 import '../databases/reading_model.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-//import 'package:fcharts/fcharts.dart' as charts;
-import 'package:flutter/material.dart';
 import '../widgets/statisticsChart.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class MyTrainingScreenSummary extends StatefulWidget {
   final PageController _currentPage;
@@ -53,13 +48,14 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   }
 
   /// Create one series with sample hard coded data.
-  List<charts.Series<Reading, int>> _createSampleData(List<Reading> chartValues) {
+  List<charts.Series<Reading, int>> _createChartData(
+      List<Reading> chartValues) {
     final data = chartValues;
 
     return [
       new charts.Series<Reading, int>(
         id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.black,
         domainFn: (Reading sales, _) => sales.time,
         measureFn: (Reading sales, _) => sales.value,
         data: data,
@@ -68,6 +64,71 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   }
 
   Widget createSummary() {
+    var graphWidth = MediaQuery.of(context).size.width / 1.3;
+    var graphHeight = MediaQuery.of(context).size.height / 5;
+    var graphColor = Colors.grey[50];
+
+    var test = [
+      Column(children: [
+        Text(
+          'Puissance instantannée',
+          style: TextStyle(
+            fontSize:
+                (MediaQuery.of(context).size.width * (1.2 / 5.5) / 89.766) * 20,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        Container(
+          child: Text('Watts'),
+          alignment: Alignment.centerLeft,
+          width: graphWidth,
+        ),
+        Container(
+          child: SimpleLineChart(
+            _createChartData(powerChartValues),
+            animate: true,
+          ),
+          height: graphHeight,
+          width: graphWidth,
+          color: graphColor,
+        ),
+        Container(
+          child: Text('temps'),
+          alignment: Alignment.topRight,
+          width: graphWidth,
+        ),
+      ]),
+      Column(children: [
+        Text(
+          'Cadence instantannée',
+          style: TextStyle(
+            fontSize:
+                (MediaQuery.of(context).size.width * (1.2 / 5.5) / 89.766) * 20,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        Container(
+          child: Text('RPM'),
+          alignment: Alignment.centerLeft,
+          width: graphWidth,
+        ),
+        Container(
+          child: SimpleLineChart(
+            _createChartData(cadenceChartValues),
+            animate: true,
+          ),
+          height: graphHeight,
+          width: graphWidth,
+          color: graphColor,
+        ),
+        Container(
+          child: Text('temps'),
+          alignment: Alignment.topRight,
+          width: graphWidth,
+        ),
+      ]),
+    ];
+
     summary = SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -144,6 +205,21 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
               'W',
               false),
           SizedBox(height: 20),
+          Container(
+            height: graphHeight * 1.6,
+            child: Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return test[index];
+              },
+              itemCount: 2,
+              pagination:
+                  new SwiperPagination(), //      activeColor = this.activeColor ?? Colors.grey[400];//themeData.primaryColor;
+              //color = this.color ?? Colors.grey[300];//themeData.scaffoldBackgroundColor;
+
+              //control: new SwiperControl(),
+            ),
+          ),
+          SizedBox(height: 20),
           _dataSummary(
               context,
               Icons.offline_bolt,
@@ -157,22 +233,6 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
           SizedBox(height: 20),
           _dataSummary(
               context, Icons.offline_bolt, 'VITESSE', '--', '--', 'km/h', true),
-          Container(
-            child: SimpleLineChart(
-              _createSampleData(powerChartValues),
-              animate: true,
-            ),
-            height: 200,
-            color: Colors.white,
-          ),
-          Container(
-            child: SimpleLineChart(
-              _createSampleData(cadenceChartValues),
-              animate: true,
-            ),
-            height: 200,
-            color: Colors.white,
-          ),
         ],
       ),
     );
