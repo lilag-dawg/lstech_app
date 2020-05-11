@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../screens/homeScreen.dart';
-import '../screens/trainingScreen.dart';
-import '../screens/historyScreen.dart';
-import '../widgets/lowerNavigationBar.dart';
+import './customAppBar.dart';
 import '../constants.dart' as Constants;
 
 double screenWidth;
@@ -14,28 +10,53 @@ class MyNavigationBar extends StatefulWidget {
   _MyNavigationBarState createState() => _MyNavigationBarState();
 }
 
-class _MyNavigationBarState extends State<MyNavigationBar> {
-  static var _currentPage =
-      PageController(initialPage: Constants.defaultPageIndex);
+class _MyNavigationBarState extends State<MyNavigationBar>
+    with TickerProviderStateMixin {
+  TabController pageTabController;
+  TabController tabController;
 
-  List<Widget> _children;
+  int topSelectedIndex = Constants.defaultPageIndex;
 
-  void _onItemTapped(int selected) {
-    setState(() {
-      //_currentPage.animateToPage(selected, duration: Duration(milliseconds: 500), curve: Curves.ease);
-      _currentPage.jumpToPage(selected);
-    });
+  @override
+  void initState() {
+    pageTabController = TabController(initialIndex: 0, length: 3, vsync: this);
+    tabController = TabController(initialIndex: 0, length: 4, vsync: this);
+    super.initState();
   }
 
-
-  void onHorizontalDrag(DragUpdateDetails details) {
-    if (details.delta.dx > 3) {
-      print("going left");
-    }
-    if (details.delta.dx < -3) {
-      print("going right");
-    }
-    print(details.delta.dx);
+  List<Widget> buildTabs() {
+    return [
+      Tab(
+        icon: Icon(
+          Icons.home,
+        ),
+        child: Text("Home",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            )),
+      ),
+      Tab(
+        icon: Icon(
+          Icons.directions_bike,
+        ),
+        child: Text("Training",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            )),
+      ),
+      Tab(
+        icon: Icon(
+          Icons.history,
+        ),
+        child: Text("History",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            )),
+      ),
+    ];
   }
 
   @override
@@ -43,22 +64,18 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-    _children = [
-      MyHomeScreen(),
-      MyTrainingScreen(),
-      MyHistoryScreen(),
-    ];
-
     return Scaffold(
-      body: PageView(
-        children: _children,
-        controller: _currentPage,
-        onPageChanged: (index){
-          _onItemTapped(index);
-        },
+      body: CustomAppBar(pageTabController: pageTabController, tabController: tabController),
+      bottomNavigationBar: TabBar(
+        tabs:buildTabs(),
+        controller: pageTabController,
+        labelColor: Colors.black,
+        unselectedLabelColor: Colors.blue,
+        indicatorSize: TabBarIndicatorSize.label,
+        indicatorPadding: EdgeInsets.all(5.0),
+        indicatorColor: Colors.black,
       ),
-      bottomNavigationBar:
-          LowerNavigationBar(_currentPage, null, _onItemTapped),
+      backgroundColor: Constants.greyColor,
     );
   }
 }

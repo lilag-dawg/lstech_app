@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/customAppBar.dart';
 import '../widgets/secondaryDashBoardData.dart';
 import '../widgets/powerDisplay.dart';
 
@@ -47,7 +46,7 @@ class MyTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomAppBar(body: _body(context),),
+      body: _body(context),
       backgroundColor: Constants.backGroundColor,
     );
   }
