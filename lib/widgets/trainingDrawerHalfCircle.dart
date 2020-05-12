@@ -134,6 +134,10 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
             ],
           ),
         ),
+        GestureDetector(
+          child: Container(width: width, height: height),
+          onDoubleTap: () => print('tapped'),
+        )
       ]
     ),
   );
