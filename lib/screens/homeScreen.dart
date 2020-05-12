@@ -10,8 +10,7 @@ class MyHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      body: CustomAppBar(),
-      
+      body: Text("home"),
       backgroundColor: Constants.backGroundColor,
     );
   }

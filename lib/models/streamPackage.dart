@@ -32,7 +32,7 @@ class StreamPackage {
   Stream<int> getStream() async* {
     BluetoothDeviceCharacteristic c =_getCharacteristic();
     if (!c.isCharacteristicStreaming) {
-      await c.getCharacteristic.setNotifyValue(true);
+      c.getCharacteristic.setNotifyValue(true);
       characteristicStreamingStatus(true);
     }
     switch (key) {

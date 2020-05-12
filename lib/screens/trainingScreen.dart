@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lstech_app/widgets/trainingDrawerHalfCircle.dart';
-import 'package:provider/provider.dart';
-
 import 'trainingSummaryScreen.dart';
-
-import '../widgets/customAppBar.dart';
+import 'package:provider/provider.dart';
 import '../widgets/secondaryDashBoardData.dart';
 import '../widgets/primaryDashBoardData.dart';
 import '../widgets/trainingDrawer.dart';
@@ -84,7 +81,7 @@ class MyTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomAppBar(body: _body(context),),
+      body: _body(context),
       backgroundColor: Constants.backGroundColor,
     );
   }
