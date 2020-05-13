@@ -11,10 +11,9 @@ String playPauseString = 'Démarrer';
 class MyArc extends StatefulWidget {
   final double diameter;
   final double width;
-  final PageController _currentPage;
-  final Function selectHandler;
+  final Function endOfTrainingClicked;
 
-  const MyArc(this. width, this._currentPage, this.selectHandler, {Key key, this.diameter = 200}) : super(key: key);
+  const MyArc(this.width, this.endOfTrainingClicked, {Key key, this.diameter = 200}) : super(key: key);
 
   @override
   _MyArcState createState() => _MyArcState();
@@ -56,17 +55,13 @@ class _MyArcState extends State<MyArc> {
     });
   }
 
-  void _goToSummary(){
-    Navigator.push(context,MaterialPageRoute(builder: (context) => MyTrainingScreenSummary(widget._currentPage, widget.selectHandler)),);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return isRaised? _actionBarRaised(_height, widget.width, offsetStack, _updateState, _goToSummary, _playPausePressed): _actionBarReduced(_height, widget.width, offsetStack, _updateState);
+    return isRaised? _actionBarRaised(_height, widget.width, offsetStack, _updateState, widget.endOfTrainingClicked, _playPausePressed): _actionBarReduced(_height, widget.width, offsetStack, _updateState);
   }
 }
 
-Widget _actionBarRaised(double height, double width, double offsetStack, Function _updateState, Function _goToSummary, Function _playPausePressed) {
+Widget _actionBarRaised(double height, double width, double offsetStack, Function _updateState, Function endOfTrainingClicked, Function _playPausePressed) {
   return Container(
     width: width,
     height: 100,
@@ -81,6 +76,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
         ),
         Positioned(
           left: 100,
+          top: offsetStack,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +122,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
                       ],
                     ),
                     onPressed: (){
-                      _goToSummary();
+                      endOfTrainingClicked(true);
                     },
                   ),
                 ],
@@ -134,10 +130,6 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
             ],
           ),
         ),
-        GestureDetector(
-          child: Container(width: width, height: height),
-          onDoubleTap: () => print('tapped'),
-        )
       ]
     ),
   );

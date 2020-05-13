@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lstech_app/screens/batteryScreen.dart';
+import 'package:lstech_app/screens/moreActionsScreen.dart';
+import 'package:lstech_app/screens/profilScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
@@ -179,10 +182,10 @@ class _AnimatedAppBar extends AnimatedWidget {
     return TabBarView(
       controller: tabController,
       children: <Widget>[
-        Icon(Icons.home),
+        MyProfilScreen(),
         FindDevicesScreen(wattzaManager),
-        Icon(Icons.battery_full),
-        Icon(Icons.dehaze)
+        MyBatteryScreen(),
+        MyMoreActionScreen()
       ],
     );
   }

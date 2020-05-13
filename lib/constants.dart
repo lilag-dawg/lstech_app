@@ -9,7 +9,8 @@ var greyColor = Colors.grey[300];
 var greyColorSelected = Colors.grey[400];
 
 // phone size
-// set in navigationBar.dart with global variables
+var appBarHeight = 55;
+var trainingStartStopWidgetHeight = 200;
 
 // emulator
 final bool isWorkingOnEmulator = true;

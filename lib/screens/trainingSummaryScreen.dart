@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:lstech_app/widgets/iconTitle.dart';
 
-import '../widgets/lowerNavigationBar.dart';
-import '../widgets/customAppBar.dart';
-
 import '../constants.dart' as Constants;
 
 class MyTrainingScreenSummary extends StatelessWidget {
 
-  final PageController _currentPage;
-  final Function selectHandler;
+  Function _onBackToPreviousPageClicked;
 
-  MyTrainingScreenSummary(this._currentPage, this.selectHandler);
+  MyTrainingScreenSummary(this._onBackToPreviousPageClicked);
 
   Widget _body(BuildContext context) {
     return SingleChildScrollView(
         child: Column(
         children: <Widget>[
           SizedBox(height:20),
-          MyIconTitle(Icons.chevron_left, 'Sommaire d\'entrainement', widgetFontWeight: FontWeight.bold, widgetIconSize: 35, widgetTextSize: 25, isAutoSize: false),
+          FlatButton(
+            child: Container(
+              child: MyIconTitle(Icons.chevron_left, 'Sommaire d\'entrainement', widgetFontWeight: FontWeight.bold, widgetIconSize: 35, widgetTextSize: 25, isAutoSize: false)
+            ),
+            color: Constants.backGroundColor,
+            onPressed: (){
+              _onBackToPreviousPageClicked(true);
+            },
+          ),
           SizedBox(height:20),
           Row(
             children: <Widget>[
@@ -77,11 +81,7 @@ class MyTrainingScreenSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: LowerNavigationBar(_currentPage, context, selectHandler),
-      body: CustomAppBar(body: _body(context),),
-      backgroundColor: Constants.backGroundColor,
-    );
+    return _body(context);
   }
 }
 
