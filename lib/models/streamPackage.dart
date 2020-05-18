@@ -13,7 +13,7 @@ class StreamPackage {
   BluetoothDeviceCharacteristic _getCharacteristic() {
     switch (key) {
       case "RPM":
-        return service.getCharacteristic("2A5B");
+        return service.getCharacteristic("2A5B"); //2A5B -> service 0x1816
         break;
       case "Battery":
         return service.getCharacteristic("2A19");
@@ -21,7 +21,6 @@ class StreamPackage {
       case "Power":
         return service.getCharacteristic("2A63");
         break;
-
       default:
         return null;
     }

@@ -45,7 +45,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   children: <Widget>[
                     SizedBox(
                         width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
-                    MyPrimaryDashBoardData(),
+                    MyPrimaryDashBoardData(null),
                   ],
                 ),
                 Row(

@@ -1,11 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
+import '../models/streamPackage.dart';
 import '../constants.dart' as Constants;
 
 class MyPrimaryDashBoardUI extends StatelessWidget {
-
+  final StreamPackage widgetData;
   final String data = '20';
   final String units = 'Watts';
+  MyPrimaryDashBoardUI(this.widgetData);
+
+    Widget _buildConnextionStatus(double diamCircle1) {
+    return StreamBuilder<BluetoothDeviceState>(
+      stream: widgetData.getConnexion(),
+      builder: (c, snapshot) {
+        final state = snapshot.data;
+        if (state == BluetoothDeviceState.connected) {
+          print(state.toString());
+          return _buildDataStream(diamCircle1);
+        }
+        widgetData.characteristicStreamingStatus(false);
+        return Icon(
+          Icons.cancel,
+          color: Colors.red,
+        );
+      },
+    );
+  }
+
+    Widget _buildDataStream(double diamCircle1) {
+    return StreamBuilder<int>(
+      stream: widgetData.getStream(),
+      builder: (c, snapshot) {
+        final value = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.active &&
+            snapshot.hasData) {
+          return Text(
+              value.toString(),
+              style: TextStyle(
+                fontSize: (diamCircle1/187.013)*90,
+              ),
+            );
+        }
+        return _buildNoDataPresent(diamCircle1);
+      },
+    );
+  }
+
+    Widget _buildNoDataPresent( double diamCircle1) {
+    return Text(
+              "-",
+              style: TextStyle(
+                fontSize: (diamCircle1/187.013)*90,
+              ),
+            );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +71,9 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
           width: diamCircle1,
           height: diamCircle1,
           child: Center(
-            child: Text(
-              data,
-              style: TextStyle(
-                fontSize: (diamCircle1/187.013)*90,
-              ),
-            ),
+            child: (widgetData != null)
+                ? _buildConnextionStatus(diamCircle1)
+                : _buildNoDataPresent(diamCircle1),
           ),
           decoration: BoxDecoration(
             color: Constants.greyColor,

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'iconTitle.dart';
 import 'primaryDashBoardUI.dart';
+import '../models/streamPackage.dart';
 
 class MyPrimaryDashBoardData extends StatelessWidget {
+  final StreamPackage widgetData;
+  MyPrimaryDashBoardData(this.widgetData);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +18,7 @@ class MyPrimaryDashBoardData extends StatelessWidget {
           Row(
             children: <Widget>[
               SizedBox(width:MediaQuery.of(context).size.width*(0.8/5.5)),
-              MyPrimaryDashBoardUI(),
+              MyPrimaryDashBoardUI(widgetData),
             ],
           ),
         ],

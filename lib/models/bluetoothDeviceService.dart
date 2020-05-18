@@ -43,7 +43,7 @@ class BluetoothDeviceService {
         break;
       case "2A65":
         await _getCharacteristicValue(c).then((result) {
-          cscFeatures(result);
+          cpFeatures(result);
         });
         break;
     }
@@ -61,6 +61,13 @@ class BluetoothDeviceService {
     bool isCrankRevSupported = (flags & 0x02 > 0);
     features.add(Feature(featureName: "CrankRev", status: isCrankRevSupported));
     features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
+  }
+
+  void cpFeatures(List<int> value){
+    int flags = value[0];
+
+    features.add(Feature(featureName: "Power", status: true));
+
   }
 
   get name {

@@ -37,6 +37,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
       stream: widgetData.getStream(),
       builder: (c, snapshot) {
         final value = snapshot.data;
+        print(value.toString());
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
           return Text(

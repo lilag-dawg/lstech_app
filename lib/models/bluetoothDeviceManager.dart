@@ -55,7 +55,7 @@ class BluetoothDeviceManager extends ChangeNotifier {
     StreamPackage getPowerPackage(){
       if(powerPackage == null){
         if(getWattza("Power") != null){
-          if(getWattza("Power").getDevice != null && getWattza("Power").getService("1816")!= null){
+          if(getWattza("Power").getDevice != null && getWattza("Power").getService("1818")!= null){
             powerPackage = StreamPackage(device: getWattza("Power").getDevice,service: getWattza("Power").getService("1818"),key:"Power");
           }
         }
