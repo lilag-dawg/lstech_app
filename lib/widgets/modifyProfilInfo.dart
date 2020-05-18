@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../constants.dart' as Constants;
-
 class ModifyProfilInfo extends StatelessWidget {
 
   final String title;

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lstech_app/widgets/trainingDrawerHalfCircle.dart';
-import 'trainingSummaryScreen.dart';
 import 'package:provider/provider.dart';
 import '../widgets/secondaryDashBoardData.dart';
 import '../widgets/primaryDashBoardData.dart';
 
 import '../models/bluetoothDeviceManager.dart';
-
+import '../databases/history_helper.dart';
 import '../constants.dart' as Constants;
-
+import '../screens/trainingSummaryScreen.dart';
 
 class MyTrainingScreen extends StatefulWidget {
-
-  MyTrainingScreen();
+  MyTrainingScreen(this.pageTabController);
+  final TabController pageTabController;
 
   @override
   _MyTrainingScreenState createState() => _MyTrainingScreenState();
@@ -20,22 +19,16 @@ class MyTrainingScreen extends StatefulWidget {
 
 class _MyTrainingScreenState extends State<MyTrainingScreen> {
 
-  bool _isEndOfTraining = false;
-  bool _isBackToPreviousPageClicked = false;
+  bool _isTrainingOver = false;
+  Map<String,dynamic> selectedSession;
 
-  void _onEndOfTrainingClicked(bool isEndOfTraining){
+  void _onEndOfTrainingClicked(bool isEndOfTraining) {
     setState(() {
-      _isBackToPreviousPageClicked = false;
-      _isEndOfTraining = isEndOfTraining;
+      _isTrainingOver = true;
     });
   }
 
-  void _onBackToPreviousPageClicked(bool isBackToPreviousPageClicked){
-    setState(() {
-      _isEndOfTraining = false;
-      _isBackToPreviousPageClicked = isBackToPreviousPageClicked;
-    });
-  }
+  
 
   Widget _body(BuildContext context) {
     final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
@@ -50,44 +43,54 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                 SizedBox(height: 20),
                 Row(
                   children: <Widget>[
-                    SizedBox(width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
                     MyPrimaryDashBoardData(),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE', wattzaManager.getRpmPackage(), 'RPM'), // 100
-                    MySecondaryDashBoardData(Icons.location_on, 'DISTANCE', null, 'm'), // 120
+                    MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE',
+                        wattzaManager.getRpmPackage(), 'RPM'), // 100
+                    MySecondaryDashBoardData(
+                        Icons.location_on, 'DISTANCE', null, 'm'), // 120
                   ],
                 ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    MySecondaryDashBoardData(Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
-                    MySecondaryDashBoardData(Icons.alarm, 'TEMPS', null, 'min'), // 00:00
+                    MySecondaryDashBoardData(
+                        Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
+                    MySecondaryDashBoardData(
+                        Icons.alarm, 'TEMPS', null, 'min'), // 00:00
                   ],
                 ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    MySecondaryDashBoardData(Icons.favorite, 'FRÉQUENCE CARDIAQUE', null, 'BPM'), // 12.5
+                    MySecondaryDashBoardData(Icons.favorite,
+                        'FRÉQUENCE CARDIAQUE', null, 'BPM'), // 12.5
                   ],
                 ),
               ],
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height - (Constants.appBarHeight + Constants.trainingStartStopWidgetHeight),
+            top: MediaQuery.of(context).size.height -
+                (Constants.appBarHeight +
+                    Constants.trainingStartStopWidgetHeight),
             child: Container(
               height: 200,
               width: MediaQuery.of(context).size.width,
               child: Align(
-                alignment: Alignment.topCenter,
-                  child: MyArc(MediaQuery.of(context).size.width, _onEndOfTrainingClicked, )
-                ),
+                  alignment: Alignment.topCenter,
+                  child: MyArc(
+                    MediaQuery.of(context).size.width,
+                    _onEndOfTrainingClicked,
+                  )),
             ),
           ),
         ],
@@ -95,10 +98,40 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
     );
   }
 
+  Future<Widget> loadLastSession() async {
+    var listOfSessions = await HistoryHelper.getListOfStartTimesAndDurations();
+    selectedSession = listOfSessions[0];
+
+    return Container();
+  }
+
+  void goToHistory() {
+    widget.pageTabController.animateTo(Constants.pageIndexes.history.index);
+  }
+
+  Widget futureBody() {
+    return FutureBuilder<Widget>(
+      future: loadLastSession(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.done:
+            return MyTrainingScreenSummary(selectedSession, goToHistory);
+          default:
+            return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isEndOfTraining && !_isBackToPreviousPageClicked? MyTrainingScreenSummary(_onBackToPreviousPageClicked) : _body(context),
+      body: _isTrainingOver == false? _body(context):futureBody(),
       backgroundColor: Constants.backGroundColor,
     );
   }
