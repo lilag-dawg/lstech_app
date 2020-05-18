@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lstech_app/widgets/iconTitle.dart';
 
-import '../widgets/lowerNavigationBar.dart';
-import '../widgets/customAppBar.dart';
-
 import '../constants.dart' as Constants;
 import '../databases/history_helper.dart';
 import '../databases/reading_model.dart';
@@ -15,12 +12,16 @@ class MyTrainingScreenSummary extends StatefulWidget {
   final PageController _currentPage;
   final Function selectHandler;
   final Map<String, dynamic> session;
+class MyTrainingScreenSummary extends StatelessWidget {
+
+  Function _onBackToPreviousPageClicked;
 
   MyTrainingScreenSummary(this._currentPage, this.selectHandler, this.session);
   @override
   _MyTrainingScreenSummaryState createState() =>
       _MyTrainingScreenSummaryState();
 }
+  MyTrainingScreenSummary(this._onBackToPreviousPageClicked);
 
 class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   Future sessionFuture;
@@ -139,6 +140,17 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
               widgetTextSize: 25,
               isAutoSize: false),
           SizedBox(height: 20),
+          SizedBox(height:20),
+          FlatButton(
+            child: Container(
+              child: MyIconTitle(Icons.chevron_left, 'Sommaire d\'entrainement', widgetFontWeight: FontWeight.bold, widgetIconSize: 35, widgetTextSize: 25, isAutoSize: false)
+            ),
+            color: Constants.backGroundColor,
+            onPressed: (){
+              _onBackToPreviousPageClicked(true);
+            },
+          ),
+          SizedBox(height:20),
           Row(
             children: <Widget>[
               SizedBox(width: 70),
@@ -275,11 +287,14 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
       ),
       backgroundColor: Constants.backGroundColor,
     );
+    return _body(context);
   }
 }
 
 Widget _dataSummary(BuildContext context, IconData icon, String title,
     String dataMax, String dataAvg, String units, bool isUnfoldMore) {
+Widget _dataSummary (BuildContext context, IconData icon, String title, String dataMax, String dataAvg, String units, bool isUnfoldMore){
+  
   return Container(
     child: Row(
       children: <Widget>[

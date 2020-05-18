@@ -9,6 +9,7 @@ class MyHistoryScreen extends StatefulWidget {
 
   final PageController currentPage;
   final Function selectHandler;
+import '../constants.dart' as Constants;
 
   MyHistoryScreen(this.currentPage, this.selectHandler);
 }
@@ -81,12 +82,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            'Wattza history',
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Constants.greyColor),
+      body: CustomAppBar(),
       backgroundColor: Constants.backGroundColor,
       body: FutureBuilder<Widget>(
         future: historyFuture,
