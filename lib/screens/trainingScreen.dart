@@ -38,50 +38,52 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20),
-                Row(
-                  children: <Widget>[
-                    SizedBox(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 10),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
-                    MyPrimaryDashBoardData(),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE',
-                        wattzaManager.getRpmPackage(), 'RPM'), // 100
-                    MySecondaryDashBoardData(
-                        Icons.location_on, 'DISTANCE', null, 'm'), // 120
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    MySecondaryDashBoardData(
-                        Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
-                    MySecondaryDashBoardData(
-                        Icons.alarm, 'TEMPS', null, 'min'), // 00:00
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    MySecondaryDashBoardData(Icons.favorite,
-                        'FRÉQUENCE CARDIAQUE', null, 'BPM'), // 12.5
-                  ],
-                ),
-              ],
+                      MyPrimaryDashBoardData(),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE',
+                          wattzaManager.getRpmPackage(), 'RPM'), // 100
+                      MySecondaryDashBoardData(
+                          Icons.location_on, 'DISTANCE', null, 'm'), // 120
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      MySecondaryDashBoardData(
+                          Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
+                      MySecondaryDashBoardData(
+                          Icons.alarm, 'TEMPS', null, 'min'), // 00:00
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      MySecondaryDashBoardData(Icons.favorite,
+                          'FRÉQUENCE CARDIAQUE', null, 'BPM'), // 12.5
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           Positioned(
             top: MediaQuery.of(context).size.height -
                 (Constants.appBarHeight +
-                    Constants.trainingStartStopWidgetHeight),
+                    Constants.trainingStartStopWidgetHeight)+1,
             child: Container(
               height: 200,
               width: MediaQuery.of(context).size.width,

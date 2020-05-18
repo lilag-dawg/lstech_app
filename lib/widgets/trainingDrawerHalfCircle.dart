@@ -66,6 +66,10 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
     height: 100,
     child: Stack(
       children: <Widget>[
+        Container(
+          width: width,
+          height: 100,
+        ),
         Positioned(
           top: offsetStack,
           child: CustomPaint(
@@ -74,7 +78,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
           ),
         ),
         Positioned(
-          left: 100,
+          left: width / 4 - 30,
           top: offsetStack,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +153,7 @@ Widget _actionBarReduced(double height, double width, double offsetStack, Functi
           ),
           Positioned(
             top: offsetStack,
-            left: 100,
+            left: width / 4 - 30,
             child:Column(
               children: <Widget>[
                 RaisedButton(
