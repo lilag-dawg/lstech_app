@@ -5,8 +5,11 @@ class MyIconTitle extends StatelessWidget {
   final IconData widgetIcon;
   final String widgetTite;
   final FontWeight widgetFontWeight;
+  final double widgetIconSize;
+  final double widgetTextSize;
+  final bool isAutoSize;
 
-  MyIconTitle(this.widgetIcon, this.widgetTite, {this.widgetFontWeight = FontWeight.normal});
+  MyIconTitle(this.widgetIcon, this.widgetTite, {this.widgetFontWeight = FontWeight.normal, this.widgetIconSize = 20, this.isAutoSize = true, this.widgetTextSize = 20});
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +17,13 @@ class MyIconTitle extends StatelessWidget {
       children: <Widget>[
         Icon(
           widgetIcon,
-          size: (MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*25,
+          size: isAutoSize? (MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*25: widgetIconSize,
         ),
-        SizedBox(width:10),
+        SizedBox(width:5),
         Text(
           widgetTite,
           style: TextStyle(
-            fontSize:(MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*20,
+            fontSize: isAutoSize?(MediaQuery.of(context).size.width*(1.2/5.5)/89.766)*20:widgetTextSize,
             fontWeight: widgetFontWeight, 
           ),
         ),

@@ -66,14 +66,17 @@ class _MyNavigationBarState extends State<MyNavigationBar>
 
     return Scaffold(
       body: CustomAppBar(pageTabController: pageTabController, tabController: tabController),
-      bottomNavigationBar: TabBar(
-        tabs:buildTabs(),
-        controller: pageTabController,
-        labelColor: Colors.black,
-        unselectedLabelColor: Colors.blue,
-        indicatorSize: TabBarIndicatorSize.label,
-        indicatorPadding: EdgeInsets.all(5.0),
-        indicatorColor: Colors.black,
+      bottomNavigationBar: PreferredSize(
+        preferredSize: Size.fromHeight(25),
+        child: TabBar(
+          tabs:buildTabs(),
+          controller: pageTabController,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.blue,
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorPadding: EdgeInsets.all(5.0),
+          indicatorColor: Colors.black,
+        ),
       ),
       backgroundColor: Constants.greyColor,
     );
