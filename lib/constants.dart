@@ -14,3 +14,10 @@ var trainingStartStopWidgetHeight = 200;
 
 // emulator
 final bool isWorkingOnEmulator = true;
+
+
+enum pageIndexes {
+  home,
+  training,
+  history,
+}

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lstech_app/screens/batteryScreen.dart';
@@ -171,7 +169,7 @@ class _AnimatedAppBar extends AnimatedWidget {
       controller: pageTabController,
       children: <Widget>[
         MyHomeScreen(),
-        MyTrainingScreen(),
+        MyTrainingScreen(pageTabController),
         MyHistoryScreen(),
       ],
     );

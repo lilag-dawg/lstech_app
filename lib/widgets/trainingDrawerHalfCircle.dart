@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lstech_app/screens/trainingSummaryScreen.dart';
 import 'package:lstech_app/widgets/iconTitle.dart';
 import 'dart:math' as math;
 

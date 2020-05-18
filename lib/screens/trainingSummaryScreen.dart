@@ -9,19 +9,14 @@ import '../widgets/statisticsChart.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class MyTrainingScreenSummary extends StatefulWidget {
-  final PageController _currentPage;
-  final Function selectHandler;
   final Map<String, dynamic> session;
-class MyTrainingScreenSummary extends StatelessWidget {
+  final Function onGoBack;
 
-  Function _onBackToPreviousPageClicked;
-
-  MyTrainingScreenSummary(this._currentPage, this.selectHandler, this.session);
+  MyTrainingScreenSummary(this.session, this.onGoBack);
   @override
   _MyTrainingScreenSummaryState createState() =>
       _MyTrainingScreenSummaryState();
 }
-  MyTrainingScreenSummary(this._onBackToPreviousPageClicked);
 
 class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   Future sessionFuture;
@@ -67,7 +62,7 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   Widget createSummary() {
     var graphWidth = MediaQuery.of(context).size.width / 1.3;
     var graphHeight = MediaQuery.of(context).size.height / 5;
-    var graphColor = Colors.grey[50];
+    var graphColor = Constants.backGroundColor;
 
     var test = [
       Column(children: [
@@ -134,23 +129,20 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
       child: Column(
         children: <Widget>[
           SizedBox(height: 20),
-          MyIconTitle(Icons.chevron_left, 'Sommaire d\'entrainement',
-              widgetFontWeight: FontWeight.bold,
-              widgetIconSize: 35,
-              widgetTextSize: 25,
-              isAutoSize: false),
-          SizedBox(height: 20),
-          SizedBox(height:20),
           FlatButton(
             child: Container(
-              child: MyIconTitle(Icons.chevron_left, 'Sommaire d\'entrainement', widgetFontWeight: FontWeight.bold, widgetIconSize: 35, widgetTextSize: 25, isAutoSize: false)
-            ),
+                child: MyIconTitle(
+                    Icons.chevron_left, 'Sommaire d\'entrainement',
+                    widgetFontWeight: FontWeight.bold,
+                    widgetIconSize: 35,
+                    widgetTextSize: 25,
+                    isAutoSize: false)),
             color: Constants.backGroundColor,
-            onPressed: (){
-              _onBackToPreviousPageClicked(true);
+            onPressed: () => {
+              widget.onGoBack()
             },
           ),
-          SizedBox(height:20),
+          SizedBox(height: 20),
           Row(
             children: <Widget>[
               SizedBox(width: 70),
@@ -280,21 +272,14 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: LowerNavigationBar(
-          widget._currentPage, context, widget.selectHandler),
-      body: CustomAppBar(
-        body: _body(context),
-      ),
+      body: _body(context),
       backgroundColor: Constants.backGroundColor,
     );
-    return _body(context);
   }
 }
 
 Widget _dataSummary(BuildContext context, IconData icon, String title,
     String dataMax, String dataAvg, String units, bool isUnfoldMore) {
-Widget _dataSummary (BuildContext context, IconData icon, String title, String dataMax, String dataAvg, String units, bool isUnfoldMore){
-  
   return Container(
     child: Row(
       children: <Widget>[

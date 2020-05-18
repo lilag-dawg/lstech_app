@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../widgets/customTile.dart';
 import '../models/deviceConnexionStatus.dart';
@@ -125,39 +124,6 @@ class _FindDevicesScreenState extends State<FindDevicesScreen>
                 });
           }
         });
-  }
-
-  Widget _bycicle() {
-    return Center(
-      child: Container(
-        child: Stack(children: <Widget>[
-          Positioned(
-            child: SvgPicture.asset(
-              "assets/bike_noWheels.svg",
-              width: 300,
-            ),
-          ),
-          Positioned(
-            left: 30,
-            bottom: 5,
-            top: 60,
-            child: SvgPicture.asset(
-              "assets/bike_wheel.svg",
-              width: 90,
-            ),
-          ),
-          Positioned(
-            right: 42,
-            bottom: 5,
-            top: 60,
-            child: SvgPicture.asset(
-              "assets/bike_wheel.svg",
-              width: 90,
-            ),
-          )
-        ]),
-      ),
-    );
   }
 
   Widget _buildAnimations() {

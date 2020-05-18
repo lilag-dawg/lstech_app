@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import '../widgets/singleSession.dart';
 import '../constants.dart' as Constants;
 import '../databases/history_helper.dart';
+import '../screens/trainingSummaryScreen.dart';
 
 class MyHistoryScreen extends StatefulWidget {
   @override
   _MyHistoryScreenState createState() => _MyHistoryScreenState();
 
-  final PageController currentPage;
-  final Function selectHandler;
-import '../constants.dart' as Constants;
-
-  MyHistoryScreen(this.currentPage, this.selectHandler);
+  MyHistoryScreen();
 }
 
 class _MyHistoryScreenState extends State<MyHistoryScreen> {
   Future historyFuture;
   SingleChildScrollView historyList;
+
+  Map<String,dynamic> selectedSession;
 
   Future<Widget> buildHistory() async {
     //await HistoryHelper.testDB();
@@ -42,7 +41,8 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
     var usedColor = Constants.greyColor;
     sessionsDataList.forEach((s) {
       var indexSeconds = DateTime.fromMillisecondsSinceEpoch(s['startTime'])
-            .toString().indexOf('.');
+          .toString()
+          .indexOf('.');
 
       sessions.add(SingleSession(
         '---.- km in ' + s['duration'].split('.')[0] + ' - xxx Calories',
@@ -52,9 +52,8 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
         usedColor == Constants.greyColor
             ? Constants.greyColorSelected
             : Constants.greyColor,
-        widget.currentPage,
-        widget.selectHandler,
         s,
+        onSessionSelected,
       ));
 
       if (context != null) {
@@ -73,33 +72,49 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
     return historyList;
   }
 
+  void onSessionSelected(Map<String,dynamic> session) {
+    setState(() {
+      selectedSession = session;
+    });
+  }
+
+  void onBackToList() {
+    setState(() {
+      selectedSession = null;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     historyFuture = buildHistory();
+    selectedSession = null;
+  }
+
+  Widget futureBody() {
+    return FutureBuilder<Widget>(
+      future: historyFuture,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.done:
+            return selectedSession == null ? historyList:MyTrainingScreenSummary(selectedSession, onBackToList);
+          default:
+            return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomAppBar(),
       backgroundColor: Constants.backGroundColor,
-      body: FutureBuilder<Widget>(
-        future: historyFuture,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.active:
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.done:
-              return historyList;
-            default:
-              return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+      body: futureBody(),
     );
   }
 }

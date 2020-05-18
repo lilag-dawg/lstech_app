@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import '../screens/trainingSummaryScreen.dart';
 
 class SingleSession extends StatelessWidget {
   final String timeString;
   final String resultString;
   final Color buttonColor;
-  final PageController currentPage;
-  final Function selectHandler;
   final Map<String, dynamic> session;
+  final Function(Map<String, dynamic> session) onSessionSelected;
 
   SingleSession(
     this.resultString,
     this.timeString,
     this.buttonColor,
-    this.currentPage,
-    this.selectHandler,
     this.session,
+    this.onSessionSelected,
   );
 
   @override
@@ -54,14 +51,7 @@ class SingleSession extends StatelessWidget {
             ),
           ],
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    MyTrainingScreenSummary(currentPage, selectHandler, session)),
-          );
-        },
+        onPressed: () => {onSessionSelected(session)},
       ),
     );
   }
