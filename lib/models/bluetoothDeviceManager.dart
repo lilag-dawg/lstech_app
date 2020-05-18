@@ -8,6 +8,7 @@ class BluetoothDeviceManager extends ChangeNotifier {
   BluetoothDeviceManager(this._wattzaDevices);
   StreamPackage rpmPackage;
   StreamPackage appBarPackage;
+  StreamPackage powerPackage;
 
   void add(WattzaDevice d) {
     _wattzaDevices.add(d);
@@ -50,5 +51,15 @@ class BluetoothDeviceManager extends ChangeNotifier {
         }
       }
     return rpmPackage;
+  }
+    StreamPackage getPowerPackage(){
+      if(powerPackage == null){
+        if(getWattza("Power") != null){
+          if(getWattza("Power").getDevice != null && getWattza("Power").getService("1816")!= null){
+            powerPackage = StreamPackage(device: getWattza("Power").getDevice,service: getWattza("Power").getService("1818"),key:"Power");
+          }
+        }
+      }
+    return powerPackage;
   }
 }

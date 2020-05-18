@@ -2,16 +2,18 @@ import 'package:flutter_blue/flutter_blue.dart';
 import './bluetoothDeviceCharacteristic.dart';
 import './feature.dart';
 
-class BluetoothDeviceService{
+class BluetoothDeviceService {
   final String serviceName;
   final BluetoothService service;
   List<BluetoothDeviceCharacteristic> characteristics = [];
   List<Feature> features = [];
 
-  BluetoothDeviceService._create(this.serviceName,this.service);
+  BluetoothDeviceService._create(this.serviceName, this.service);
 
-  static Future<BluetoothDeviceService> create(String serviceName, BluetoothService service) async{
-    BluetoothDeviceService wattzaService = BluetoothDeviceService._create(serviceName, service);
+  static Future<BluetoothDeviceService> create(
+      String serviceName, BluetoothService service) async {
+    BluetoothDeviceService wattzaService =
+        BluetoothDeviceService._create(serviceName, service);
 
     await wattzaService._getWattzaCharacteristics(service);
 
@@ -19,23 +21,31 @@ class BluetoothDeviceService{
   }
 
   Future<void> _getWattzaCharacteristics(BluetoothService s) async {
-    await Future.forEach(s.characteristics, (BluetoothCharacteristic c) async{
+    await Future.forEach(s.characteristics, (BluetoothCharacteristic c) async {
       await _setFeatures(c.uuid.toString().toUpperCase().substring(4, 8), c);
-      characteristics.add(BluetoothDeviceCharacteristic(c.uuid.toString().toUpperCase().substring(4, 8), c));
+      characteristics.add(BluetoothDeviceCharacteristic(
+          c.uuid.toString().toUpperCase().substring(4, 8), c));
     });
   }
 
   Future<void> _setFeatures(String name, BluetoothCharacteristic c) async {
-      switch (name) {
+    switch (name) {
       case "2A5C":
         await _getCharacteristicValue(c).then((result) {
           cscFeatures(result);
         });
         break;
       case "2A19":
-        await _getCharacteristicValue(c).then((result){
-          features.add(Feature(featureName: "BatteryLevel",status: true, value: result[0]));
+        await _getCharacteristicValue(c).then((result) {
+          features.add(Feature(
+              featureName: "BatteryLevel", status: true, value: result[0]));
         });
+        break;
+      case "2A65":
+        await _getCharacteristicValue(c).then((result) {
+          cscFeatures(result);
+        });
+        break;
     }
   }
 
@@ -53,38 +63,37 @@ class BluetoothDeviceService{
     features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
   }
 
-  get name{
+  get name {
     return serviceName;
   }
 
   bool checkIfFeatureIsSupported(String featureName) {
     bool isSupported = false;
-    features.forEach((f){
-      if(f.name == featureName){
+    features.forEach((f) {
+      if (f.name == featureName) {
         isSupported = f.isSupported;
       }
     });
     return isSupported;
   }
 
-  Feature getFeature(String name){
+  Feature getFeature(String name) {
     Feature selected;
-    features.forEach((f){
-      if(f.name == name){
+    features.forEach((f) {
+      if (f.name == name) {
         selected = f;
       }
     });
     return selected;
   }
-  BluetoothDeviceCharacteristic getCharacteristic(String name){
+
+  BluetoothDeviceCharacteristic getCharacteristic(String name) {
     BluetoothDeviceCharacteristic selected;
-    characteristics.forEach((c){
-      if(c.name == name){
+    characteristics.forEach((c) {
+      if (c.name == name) {
         selected = c;
       }
     });
     return selected;
   }
-  
 }
-

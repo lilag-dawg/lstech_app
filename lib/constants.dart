@@ -13,7 +13,7 @@ var appBarHeight = 55;
 var trainingStartStopWidgetHeight = 200;
 
 // emulator
-final bool isWorkingOnEmulator = true;
+final bool isWorkingOnEmulator = false;
 
 
 enum pageIndexes {
