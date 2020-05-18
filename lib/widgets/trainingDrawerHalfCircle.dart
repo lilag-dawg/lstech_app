@@ -78,7 +78,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
           ),
         ),
         Positioned(
-          left: width / 4 - 30,
+          left: width / 3.3 - 30,
           top: offsetStack,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -153,7 +153,7 @@ Widget _actionBarReduced(double height, double width, double offsetStack, Functi
           ),
           Positioned(
             top: offsetStack,
-            left: width / 4 - 30,
+            left: width / 3.3 - 30,
             child:Column(
               children: <Widget>[
                 RaisedButton(
