@@ -18,7 +18,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
   Map<String,dynamic> selectedSession;
 
   Future<Widget> buildHistory() async {
-    await HistoryHelper.testDB();
+    //await HistoryHelper.testDB();
     List<Widget> sessions = List<Widget>();
     sessions.add(Container(
       child: Text(
