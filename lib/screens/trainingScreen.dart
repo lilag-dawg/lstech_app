@@ -38,13 +38,12 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 10),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 20),
+                Row(
+                  children: <Widget>[
+                    SizedBox(
                         width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
                     MyPrimaryDashBoardData(wattzaManager.getPowerPackage()),
                   ],
@@ -82,7 +81,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           Positioned(
             top: MediaQuery.of(context).size.height -
                 (Constants.appBarHeight +
-                    Constants.trainingStartStopWidgetHeight)+1,
+                    Constants.trainingStartStopWidgetHeight),
             child: Container(
               height: 200,
               width: MediaQuery.of(context).size.width,
