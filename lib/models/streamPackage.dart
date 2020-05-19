@@ -32,10 +32,6 @@ class StreamPackage {
 
   Stream<int> getStream() async* {
     BluetoothDeviceCharacteristic c = _getCharacteristic();
-    if (!c.isCharacteristicStreaming) {
-      c.getCharacteristic.setNotifyValue(true);
-      characteristicStreamingStatus(true);
-    }
     switch (key) {
       case "RPM":
         yield* convertRawToRpm(c.getCharacteristic.value);
@@ -64,15 +60,12 @@ class StreamPackage {
     }
   }
   Stream<int> convertRawToPower(Stream<List<int>> source) async* {
-    Map<String, List<int>> currentAndLast = {'current': [], 'last': []};
+    int rpmValue;
     await for (List<int> chunk in source) {
-      if (chunk.isNotEmpty && chunk[0] != 1) {
-        currentAndLast['last'] = currentAndLast['current'];
-        currentAndLast['current'] = chunk;
-        if (currentAndLast['last'].length != 0 &&
-            currentAndLast['current'].length != 0) {
-          yield rpmConversion(currentAndLast);
-        }
+      if (chunk.isNotEmpty) {
+          rpmValue = (chunk[3]<< 8) + chunk[2];
+          yield rpmValue;
+        
       }
     }
   }
@@ -122,8 +115,4 @@ class StreamPackage {
     return rpm.round();
   }
 
-  void characteristicStreamingStatus(bool status) {
-    BluetoothDeviceCharacteristic c = _getCharacteristic();
-    c.setIsCharacteristicStreaming = status;
-  }
 }

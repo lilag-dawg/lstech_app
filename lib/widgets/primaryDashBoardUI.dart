@@ -19,7 +19,6 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
           print(state.toString());
           return _buildDataStream(diamCircle1);
         }
-        widgetData.characteristicStreamingStatus(false);
         return Icon(
           Icons.cancel,
           color: Colors.red,

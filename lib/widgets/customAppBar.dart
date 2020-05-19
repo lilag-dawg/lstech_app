@@ -233,7 +233,6 @@ class _BatteryIcon extends StatelessWidget {
             return _batteryConnected(
                 connexionHandler.getBatteryLevel().toDouble());
           }
-          connexionHandler.characteristicStreamingStatus(false);
           return _batteryDisconnected();
         });
   }
@@ -352,7 +351,6 @@ class _ConnexionIcon extends StatelessWidget {
                 padding: EdgeInsets.all(8.0),
                 child: Icon(Icons.bluetooth_connected, color: Colors.green));
           }
-          connexionHandler.characteristicStreamingStatus(false);
           return _buildDeviceDisconnected();
         });
   }

@@ -23,8 +23,7 @@ class BluetoothDeviceService {
   Future<void> _getWattzaCharacteristics(BluetoothService s) async {
     await Future.forEach(s.characteristics, (BluetoothCharacteristic c) async {
       await _setFeatures(c.uuid.toString().toUpperCase().substring(4, 8), c);
-      characteristics.add(BluetoothDeviceCharacteristic(
-          c.uuid.toString().toUpperCase().substring(4, 8), c));
+      await BluetoothDeviceCharacteristic.create(c.uuid.toString().toUpperCase().substring(4, 8), c).then((value) => characteristics.add(value));
     });
   }
 
