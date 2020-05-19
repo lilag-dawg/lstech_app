@@ -1,9 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:lstech_app/widgets/heightWeightCrankDialog.dart';
 import 'package:lstech_app/widgets/modifyProfilInfo.dart';
+import 'package:lstech_app/widgets/sexDialog.dart';
 
 import '../constants.dart' as Constants;
 
-class MyProfilScreen extends StatelessWidget {
+class MyProfilScreen extends StatefulWidget {
+
+  @override
+  _MyProfilScreenState createState() => _MyProfilScreenState();
+}
+
+class _MyProfilScreenState extends State<MyProfilScreen> {
+
+  String _heightString = '120';
+  String _crankString = '17';
+  String _weightString = '180';
+  String _sexString = 'Homme';
+  DateTime _dateTime = DateTime(1997,01,07);
+
+  void _heightButtonClicked() async {
+    _heightString = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return HeightWeightCrankDialog(
+            initialValue: double.parse(_heightString),
+            isHeight: true,
+            isWeight: false,
+            isCrank: false,
+          );
+        });
+    setState(() {
+      _heightString = _heightString;
+    });
+  }
+
+  void _weightButtonClicked() async {
+    _weightString = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return HeightWeightCrankDialog(
+            initialValue: double.parse(_weightString),
+            isHeight: false,
+            isWeight: true,
+            isCrank: false,
+          );
+        });
+    setState(() {
+      _weightString = _weightString;
+    });
+  }
+
+  void _crankButtonClicked() async {
+    _crankString = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return HeightWeightCrankDialog(
+            initialValue: double.parse(_crankString),
+            isHeight: false,
+            isWeight: false,
+            isCrank: true,
+          );
+        });
+    setState(() {
+      _crankString = _crankString;
+    });
+  }
+
+  void _sexButtonClicked() async {
+    _sexString = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return SexDialog(_sexString);
+        });
+    setState(() {
+      _sexString = _sexString;
+    });
+  }
+
+  void _dateButtonClicked(){
+    showDatePicker(
+      context: context, 
+      initialDate: DateTime(1997, 01, 07), 
+      firstDate: DateTime(1900), 
+      lastDate: DateTime(2222)
+    ).then((date){
+      setState(() {
+        _dateTime = date;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,6 +122,7 @@ class MyProfilScreen extends StatelessWidget {
                     ),
                   ),
                   RaisedButton(
+                    color: Constants.backGroundColor,
                     child: Text('Configurer la page d\'entrainement'),
                     onPressed: (){},
                   )
@@ -60,7 +153,7 @@ class MyProfilScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Manivelle du pédalier', '17', 'cm', null, null)
+                  ModifyProfilInfo('Manivelle du pédalier', _crankString, 'cm', null, _crankButtonClicked)
                 ],
               )
             ]
@@ -88,13 +181,13 @@ class MyProfilScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Poid', '180', 'lbs', null, null),
+                  ModifyProfilInfo('Poid', _weightString, 'lbs', null, _weightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Grandeur', '120', 'cm', null, null),
+                  ModifyProfilInfo('Grandeur', _heightString, 'cm', null, _heightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Sexe', 'Féminin', 'lbs', null, null),
+                  ModifyProfilInfo('Sexe', _sexString, '', null, _sexButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Date de naissance', '15', 'Avril 1991', null, null),
+                  ModifyProfilInfo('Date de naissance', DateFormat('yMMMd').format(_dateTime), '', null, _dateButtonClicked),
                 ],
               )
             ]
