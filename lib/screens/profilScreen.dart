@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lstech_app/widgets/heightWeightCrankDialog.dart';
+import 'package:lstech_app/widgets/infoPopup.dart';
 import 'package:lstech_app/widgets/modifyProfilInfo.dart';
 import 'package:lstech_app/widgets/sexDialog.dart';
 
@@ -96,6 +97,16 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
     });
   }
 
+  void _infoButtonClicked() async {
+    _sexString = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return MyInfoPopup();
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -153,7 +164,7 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Manivelle du pédalier', _crankString, 'cm', null, _crankButtonClicked)
+                  ModifyProfilInfo('Manivelle du pédalier', _crankString, 'cm', _infoButtonClicked, _crankButtonClicked)
                 ],
               )
             ]
@@ -181,13 +192,13 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Poid', _weightString, 'lbs', null, _weightButtonClicked),
+                  ModifyProfilInfo('Poid', _weightString, 'lbs', _infoButtonClicked, _weightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Grandeur', _heightString, 'cm', null, _heightButtonClicked),
+                  ModifyProfilInfo('Grandeur', _heightString, 'cm', _infoButtonClicked, _heightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Sexe', _sexString, '', null, _sexButtonClicked),
+                  ModifyProfilInfo('Sexe', _sexString, '', _infoButtonClicked, _sexButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Date de naissance', DateFormat('yMMMd').format(_dateTime), '', null, _dateButtonClicked),
+                  ModifyProfilInfo('Date de naissance', DateFormat('yMMMd').format(_dateTime), '', _infoButtonClicked, _dateButtonClicked),
                 ],
               )
             ]
