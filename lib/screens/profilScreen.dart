@@ -97,12 +97,52 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
     });
   }
 
-  void _infoButtonClicked() async {
+  void _crankInfoButtonClicked() async {
     _sexString = await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return MyInfoPopup();
+        return MyInfoPopup('assets/crankImage.jpg');
+      }
+    );
+  }
+
+  void _weightInfoButtonClicked() async {
+    _sexString = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return MyInfoPopup('assets/weightImage.jpg');
+      }
+    );
+  }
+
+  void _heightInfoButtonClicked() async {
+    _sexString = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return MyInfoPopup('assets/heightImage.jpg');
+      }
+    );
+  }
+
+  void _birthInfoButtonClicked() async {
+    _sexString = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return MyInfoPopup('assets/calendarImage.jpg');
+      }
+    );
+  }
+
+  void _genderInfoButtonClicked() async {
+    _sexString = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return MyInfoPopup('assets/genderImage.jpg');
       }
     );
   }
@@ -164,7 +204,7 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Manivelle du pédalier', _crankString, 'cm', _infoButtonClicked, _crankButtonClicked)
+                  ModifyProfilInfo('Manivelle du pédalier', _crankString, 'cm', _crankInfoButtonClicked, _crankButtonClicked)
                 ],
               )
             ]
@@ -192,13 +232,13 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ModifyProfilInfo('Poid', _weightString, 'lbs', _infoButtonClicked, _weightButtonClicked),
+                  ModifyProfilInfo('Poid', _weightString, 'lbs', _weightInfoButtonClicked, _weightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Grandeur', _heightString, 'cm', _infoButtonClicked, _heightButtonClicked),
+                  ModifyProfilInfo('Grandeur', _heightString, 'cm', _heightInfoButtonClicked, _heightButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Sexe', _sexString, '', _infoButtonClicked, _sexButtonClicked),
+                  ModifyProfilInfo('Sexe', _sexString, '', _genderInfoButtonClicked, _sexButtonClicked),
                   Container(width: MediaQuery.of(context).size.width -20, height: 2, color: Colors.grey[600]),
-                  ModifyProfilInfo('Date de naissance', DateFormat('yMMMd').format(_dateTime), '', _infoButtonClicked, _dateButtonClicked),
+                  ModifyProfilInfo('Date de naissance', DateFormat('yMMMd').format(_dateTime), '', _birthInfoButtonClicked, _dateButtonClicked),
                 ],
               )
             ]

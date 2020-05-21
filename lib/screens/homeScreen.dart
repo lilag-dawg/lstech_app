@@ -44,12 +44,12 @@ Widget _homeBody (BuildContext context){
       height: MediaQuery.of(context).size.height * 0.256,
     ),
     Image.asset(
-      'assets/avgPower.jpg',
+      'assets/maxPower.jpg',
       width: MediaQuery.of(context).size.width-50,
       height: MediaQuery.of(context).size.height * 0.256,
     ),
     Image.asset(
-      'assets/avgPower.jpg',
+      'assets/medianPower.jpg',
       width: MediaQuery.of(context).size.width-50,
       height: MediaQuery.of(context).size.height * 0.256,
     ),
