@@ -91,9 +91,11 @@ class _MyProfilScreenState extends State<MyProfilScreen> {
       firstDate: DateTime(1900), 
       lastDate: DateTime(2222)
     ).then((date){
-      setState(() {
-        _dateTime = date;
-      });
+      if (date != null){
+        setState(() {
+          _dateTime = date;
+        }); 
+      }
     });
   }
 
