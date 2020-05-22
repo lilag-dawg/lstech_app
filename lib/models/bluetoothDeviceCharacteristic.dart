@@ -28,8 +28,6 @@ class BluetoothDeviceCharacteristic {
     await characteristic.setNotifyValue(true);
   }
 
-
-
   get name {
     return characteristicName;
   }

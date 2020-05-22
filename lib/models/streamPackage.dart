@@ -34,10 +34,10 @@ class StreamPackage {
     BluetoothDeviceCharacteristic c = _getCharacteristic();
     switch (key) {
       case "RPM":
-        yield* convertRawToRpm(c.getCharacteristic.value);
+        yield* convertRaw1816ToRpm(c.getCharacteristic.value);
         break;
       case "Power":
-        yield* convertRawToPower(c.getCharacteristic.value);
+        yield* convertRaw1818ToPower(c.getCharacteristic.value);
         break;
     }
   }
@@ -46,7 +46,7 @@ class StreamPackage {
     yield* device.state;
   }
 
-  Stream<int> convertRawToRpm(Stream<List<int>> source) async* {
+  Stream<int> convertRaw1816ToRpm(Stream<List<int>> source) async* {
     Map<String, List<int>> currentAndLast = {'current': [], 'last': []};
     await for (List<int> chunk in source) {
       if (chunk.isNotEmpty && chunk[0] != 1) {
@@ -54,23 +54,24 @@ class StreamPackage {
         currentAndLast['current'] = chunk;
         if (currentAndLast['last'].length != 0 &&
             currentAndLast['current'].length != 0) {
-          yield rpmConversion(currentAndLast);
+          yield rpmConversion1816(currentAndLast);
         }
       }
     }
   }
-  Stream<int> convertRawToPower(Stream<List<int>> source) async* {
+
+  Stream<int> convertRaw1818ToPower(Stream<List<int>> source) async* {
     int rpmValue;
     await for (List<int> chunk in source) {
       if (chunk.isNotEmpty) {
-          rpmValue = (chunk[3]<< 8) + chunk[2];
+          rpmValue = (chunk[3] << 8) + chunk[2];
           yield rpmValue;
         
       }
     }
   }
 
-  int rpmConversion(Map<String, List<int>> currentAndLast) {
+  int rpmConversion1816(Map<String, List<int>> currentAndLast) {
     currentAndLast.values.forEach((data) {
       switch (data[0]) {
         case 3:
@@ -114,5 +115,6 @@ class StreamPackage {
     }
     return rpm.round();
   }
+
 
 }

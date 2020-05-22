@@ -65,6 +65,10 @@ class BluetoothDeviceService {
   void cpFeatures(List<int> value){
     int flags = value[0];
 
+    bool isWheelRevSupported = (flags & 0x04 > 0);
+    bool isCrankRevSupported = (flags & 0x05 > 0);
+    features.add(Feature(featureName: "CrankRev", status: isCrankRevSupported));
+    features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
     features.add(Feature(featureName: "Power", status: true));
 
   }
