@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './customAppBar.dart';
 import '../constants.dart' as Constants;
+import '../databases/base_db.dart';
 
 double screenWidth;
 double screenHeight;
@@ -59,17 +60,14 @@ class _MyNavigationBarState extends State<MyNavigationBar>
     ];
   }
 
-  @override
-  Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
+  Widget buildDisplay() {
     return Scaffold(
-      body: CustomAppBar(pageTabController: pageTabController, tabController: tabController),
+      body: CustomAppBar(
+          pageTabController: pageTabController, tabController: tabController),
       bottomNavigationBar: PreferredSize(
         preferredSize: Size.fromHeight(25),
         child: TabBar(
-          tabs:buildTabs(),
+          tabs: buildTabs(),
           controller: pageTabController,
           labelColor: Colors.black,
           unselectedLabelColor: Colors.blue,
@@ -80,5 +78,32 @@ class _MyNavigationBarState extends State<MyNavigationBar>
       ),
       backgroundColor: Constants.greyColor,
     );
+  }
+
+  Widget futureBody() {
+    return FutureBuilder<void>(
+      future: DatabaseProvider.database,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.done:
+            return buildDisplay();
+          default:
+            return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
+    return futureBody();
   }
 }

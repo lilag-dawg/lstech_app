@@ -5,14 +5,15 @@ import 'dart:math' as math;
 import '../constants.dart' as Constants;
 
 IconData playPauseIcon = Icons.play_arrow;
-String playPauseString = 'Démarrer';
+String sessionStateString = 'Démarrer';
 
 class MyArc extends StatefulWidget {
   final double diameter;
   final double width;
   final Function endOfTrainingClicked;
+  final Function updateSession;
 
-  const MyArc(this.width, this.endOfTrainingClicked, {Key key, this.diameter = 200}) : super(key: key);
+  const MyArc(this.width, this.endOfTrainingClicked, this.updateSession, {Key key, this.diameter = 200}) : super(key: key);
 
   @override
   _MyArcState createState() => _MyArcState();
@@ -23,17 +24,27 @@ class _MyArcState extends State<MyArc> {
   double offsetStack = 0;
   bool isRaised = true;
   bool isPlayShown = true;
+  bool isSessionInitiated = false;
 
   void _playPausePressed(){
     setState(() {
-      if(isPlayShown){
+      if(!isSessionInitiated) {
+        widget.updateSession(sessionStateString);
         playPauseIcon = Icons.pause;
-        playPauseString = 'Pause';
+        sessionStateString = 'Pause';
+        isPlayShown = false;
+        isSessionInitiated = true;
+      }
+      else if(isPlayShown){
+        widget.updateSession(sessionStateString);
+        playPauseIcon = Icons.pause;
+        sessionStateString = 'Pause';
         isPlayShown = false;
       }
       else{
+        widget.updateSession(sessionStateString);
         playPauseIcon = Icons.play_arrow;
-        playPauseString = 'Démarrer';
+        sessionStateString = 'Résumer';
         isPlayShown = true;
       }
     });
@@ -102,7 +113,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
                         children: <Widget>[
                           Icon(playPauseIcon),
                           SizedBox(width: 5),
-                          Text(playPauseString)
+                          Text(sessionStateString)
                         ],
                       ),
                       onPressed: (){

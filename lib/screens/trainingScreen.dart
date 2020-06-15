@@ -8,6 +8,13 @@ import '../models/bluetoothDeviceManager.dart';
 import '../databases/history_helper.dart';
 import '../constants.dart' as Constants;
 import '../screens/trainingSummaryScreen.dart';
+import '../databases/base_db.dart';
+import '../databases/session_model.dart';
+import '../databases/reading_model.dart';
+import '../databases/standard_reading_model.dart';
+import '../databases/session_segment_model.dart';
+import '../databases/base_db.dart';
+import '../widgets/statisticsChart.dart';
 
 class MyTrainingScreen extends StatefulWidget {
   MyTrainingScreen(this.pageTabController);
@@ -18,9 +25,8 @@ class MyTrainingScreen extends StatefulWidget {
 }
 
 class _MyTrainingScreenState extends State<MyTrainingScreen> {
-
   bool _isTrainingOver = false;
-  Map<String,dynamic> selectedSession;
+  Map<String, dynamic> selectedSession;
 
   void _onEndOfTrainingClicked(bool isEndOfTraining) {
     setState(() {
@@ -28,7 +34,12 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
     });
   }
 
-  
+  void updateSession(String sessionStateString) async {
+    if(sessionStateString == 'Démarrer') {
+      var test = SessionTableModel(sessionType: 'intervals');
+      await DatabaseProvider.insert(SessionTableModel.tableName, test);
+    }
+  }
 
   Widget _body(BuildContext context) {
     final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
@@ -90,6 +101,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   child: MyArc(
                     MediaQuery.of(context).size.width,
                     _onEndOfTrainingClicked,
+                    updateSession,
                   )),
             ),
           ),
@@ -131,7 +143,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isTrainingOver == false? _body(context):futureBody(),
+      body: _isTrainingOver == false ? _body(context) : futureBody(),
       backgroundColor: Constants.backGroundColor,
     );
   }
