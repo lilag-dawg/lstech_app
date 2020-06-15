@@ -26,28 +26,32 @@ class _MyArcState extends State<MyArc> {
   bool isPlayShown = true;
   bool isSessionInitiated = false;
 
-  void _playPausePressed(){
-    setState(() {
-      if(!isSessionInitiated) {
-        widget.updateSession(sessionStateString);
-        playPauseIcon = Icons.pause;
+  Future<void> _playPausePressed() async {
+    if(!isSessionInitiated) {
+      await widget.updateSession(sessionStateString);
+      playPauseIcon = Icons.pause;
+      setState(() {
         sessionStateString = 'Pause';
         isPlayShown = false;
         isSessionInitiated = true;
-      }
-      else if(isPlayShown){
-        widget.updateSession(sessionStateString);
+      });
+    }
+    else if(isPlayShown){
+      widget.updateSession(sessionStateString);
+      setState(() {
         playPauseIcon = Icons.pause;
         sessionStateString = 'Pause';
         isPlayShown = false;
-      }
-      else{
-        widget.updateSession(sessionStateString);
+      });
+    }
+    else{
+      widget.updateSession(sessionStateString);
+      setState(() {
         playPauseIcon = Icons.play_arrow;
         sessionStateString = 'Résumer';
-        isPlayShown = true;
-      }
-    });
+        isPlayShown = true;       
+      });
+    }
   }
 
   void _updateState(){

@@ -39,6 +39,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
       var test = SessionTableModel(sessionType: 'intervals');
       await DatabaseProvider.insert(SessionTableModel.tableName, test);
     }
+    if(sessionStateString == 'Résumer'){}
+    if(sessionStateString == 'Pause'){}
   }
 
   Widget _body(BuildContext context) {
