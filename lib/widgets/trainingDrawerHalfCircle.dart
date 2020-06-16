@@ -31,7 +31,7 @@ class _MyArcState extends State<MyArc> {
   bool isSessionStopped = false;
 
   Future<void> _playPausePressed() async {
-    if (!isSessionInitiated) {
+    if (!isSessionStopped && !isSessionInitiated) {
       await widget.updateSession('Démarrer');
       playPauseIcon = Icons.pause;
       setState(() {
@@ -39,7 +39,7 @@ class _MyArcState extends State<MyArc> {
         isPlayShown = false;
         isSessionInitiated = true;
       });
-    } else if (isPlayShown) {
+    } else if (!isSessionStopped && isPlayShown) {
       await widget.updateSession(SessionSegmentTableModel.pauseTypeString);
       setState(() {
         playPauseIcon = Icons.pause;
