@@ -52,8 +52,10 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
       segmentStartValue = DateTime.now().millisecondsSinceEpoch;
     }
     if (sessionStateString == SessionSegmentTableModel.trainingTypeString) {
-      //resume
+      //reprendre
       var stopStartValue = DateTime.now().millisecondsSinceEpoch;
+
+      print(stopStartValue - segmentStartValue);
 
       var segment = SessionSegmentTableModel(
           segmentType: SessionSegmentTableModel.pauseTypeString,
@@ -61,14 +63,15 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           endTime: stopStartValue,
           sessionId: currentSessionId);
       await DatabaseProvider.insert(
-          SessionSegmentTableModel.tableName, segment);
+          SessionSegmentTableModel.tableName, segment).then((_) => segmentStartValue = stopStartValue);
 
-      segmentStartValue = stopStartValue;
     }
 
     if (sessionStateString == SessionSegmentTableModel.pauseTypeString) {
       //pause
       var stopStartValue = DateTime.now().millisecondsSinceEpoch;
+
+      print(stopStartValue - segmentStartValue);
 
       var segment = SessionSegmentTableModel(
           segmentType: SessionSegmentTableModel.trainingTypeString,
@@ -76,9 +79,9 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           endTime: stopStartValue,
           sessionId: currentSessionId);
       await DatabaseProvider.insert(
-          SessionSegmentTableModel.tableName, segment);
+          SessionSegmentTableModel.tableName, segment).then((_) => segmentStartValue = stopStartValue);
 
-      segmentStartValue = stopStartValue;
+      
     }
   }
 

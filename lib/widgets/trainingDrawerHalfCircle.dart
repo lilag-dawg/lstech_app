@@ -40,21 +40,21 @@ class _MyArcState extends State<MyArc> {
         isSessionInitiated = true;
       });
     } else if (!isSessionStopped && isPlayShown) {
-      await widget.updateSession(SessionSegmentTableModel.pauseTypeString);
+      await widget.updateSession(SessionSegmentTableModel.trainingTypeString);
       setState(() {
         playPauseIcon = Icons.pause;
         sessionStateString = 'Pause';
         isPlayShown = false;
       });
     } else if (!isSessionStopped) {
-      await widget.updateSession(SessionSegmentTableModel.trainingTypeString);
+      await widget.updateSession(SessionSegmentTableModel.pauseTypeString);
       setState(() {
         playPauseIcon = Icons.play_arrow;
         sessionStateString = 'Reprendre';
         isPlayShown = true;
       });
     } else {
-      await widget.updateSession(sessionStateString == 'Reprendre'? 'Pause':'Reprendre'); // if sessionStateString == 'Reprendre', then a training segment was just completed, as if the user just pressed the pause button
+      await widget.updateSession(sessionStateString == 'Reprendre'? SessionSegmentTableModel.trainingTypeString : SessionSegmentTableModel.pauseTypeString); // if sessionStateString == 'Reprendre', then a training segment was just completed, as if the user just pressed the pause button
       isSessionInitiated = false;
       setState(() {
         playPauseIcon = Icons.play_arrow;
