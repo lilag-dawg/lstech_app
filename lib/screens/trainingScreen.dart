@@ -30,13 +30,13 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   int currentSessionId;
   int segmentStartValue;
 
-  void _onEndOfTrainingClicked() {
+  void _onEndOfTrainingClicked(){
     setState(() {
       _isTrainingOver = true;
     });
   }
 
-  void updateSession(String sessionStateString) async {
+  Future<void> updateSession(String sessionStateString) async {
     if (sessionStateString == 'Démarrer') {
       //start
       _isTrainingOver = false;
@@ -152,10 +152,9 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   }
 
   Future<void> loadLastSession() async {
-    var listOfSessions = await HistoryHelper.getListOfStartTimesAndDurations();
-    selectedSession = listOfSessions[0];
-
-    return Container();
+    var sessionsDataList =
+        await HistoryHelper.getListOfStartTimesAndDurations();
+    selectedSession = sessionsDataList[0];
   }
 
   void goToHistory() {

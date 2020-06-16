@@ -11,8 +11,8 @@ import '../widgets/statisticsChart.dart';
 abstract class HistoryHelper {
   static Future<void> testDB() async {
     await DatabaseProvider.database;
-    await DatabaseProvider.eraseDatabase();
-    await DatabaseProvider.database;
+    //await DatabaseProvider.eraseDatabase();
+    //await DatabaseProvider.database;
 
     var test = SessionTableModel(sessionType: 'intervals');
     await DatabaseProvider.insert(SessionTableModel.tableName, test);
@@ -252,7 +252,7 @@ associateTimeAndReadingValues :
       for (int i = 0; i < sessionSegmentsList.length; i++) {
         var sessionSegment =
             SessionSegmentTableModel.fromMap(sessionSegmentsList[i]);
-        if (sessionSegment.segmentType == 'training') {
+        if (sessionSegment.segmentType == SessionSegmentTableModel.trainingTypeString) {
           timeSpentTraining +=
               sessionSegment.endTime - sessionSegment.startTime;
         }
