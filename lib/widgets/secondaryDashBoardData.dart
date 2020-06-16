@@ -6,6 +6,7 @@ import '../models/streamPackage.dart';
 import 'iconTitle.dart';
 
 import '../databases/reading_model.dart';
+import '../databases/base_db.dart';
 import '../databases/standard_reading_model.dart';
 
 class MySecondaryDashBoardData extends StatelessWidget {
@@ -13,11 +14,12 @@ class MySecondaryDashBoardData extends StatelessWidget {
   final String widgetTitle;
   final String widgetUnits;
   final StreamPackage widgetData;
+  final int currentSessionId;
 
   Text previousDataString;
 
   MySecondaryDashBoardData(
-      this.widgetIcon, this.widgetTitle, this.widgetData, this.widgetUnits);
+      this.widgetIcon, this.widgetTitle, this.widgetData, this.widgetUnits, this.currentSessionId);
 
   Widget _buildConnextionStatus(BuildContext context) {
     return StreamBuilder<BluetoothDeviceState>(
@@ -72,15 +74,29 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  void storeData(int value) async {
+  Future<void> storeData(int value) async {
 
     var reading = ReadingTableModel(
             timeOfReading: DateTime.now().millisecondsSinceEpoch,
             readingType: ReadingTableModel.powerTypeString,
-            sessionId: queriedSessions[queriedSessions.length - 1]
-                ['sessionId']);
-        await DatabaseProvider.insert(ReadingTableModel.tableName, readingTest);
+            sessionId: currentSessionId);
+        await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
 
+    var standard = StandardReadingTableModel(
+        value: value,
+        readingId: currentSessionId);
+    await DatabaseProvider.insert(
+        getDataType(), standard);
+  }
+
+  String getDataType(){
+    switch(widgetTitle){
+      case 'RPM':
+        return StandardReadingTableModel.cadenceTableName;
+        break;
+      default:
+        return null; //dont know what happens if trying to insert something type null in db.
+    }
   }
 
   Widget _buildNoDataPresent(BuildContext context) {
