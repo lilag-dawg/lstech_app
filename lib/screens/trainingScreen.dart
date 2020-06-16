@@ -30,7 +30,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   int currentSessionId;
   int segmentStartValue;
 
-  void _onEndOfTrainingClicked(bool isEndOfTraining) {
+  void _onEndOfTrainingClicked() {
     setState(() {
       _isTrainingOver = true;
     });
@@ -151,17 +151,11 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
     );
   }
 
-  Future<Widget> loadLastSession() async {
+  Future<void> loadLastSession() async {
     var listOfSessions = await HistoryHelper.getListOfStartTimesAndDurations();
     selectedSession = listOfSessions[0];
 
-    return MyTrainingScreenSummary(selectedSession, onBackToList);
-  }
-
-  void onBackToList() {
-    setState(() {
-      selectedSession = null;
-    });
+    return Container();
   }
 
   void goToHistory() {
@@ -169,7 +163,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   }
 
   Widget futureBody() {
-    return FutureBuilder<Widget>(
+    return FutureBuilder<void>(
       future: loadLastSession(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {

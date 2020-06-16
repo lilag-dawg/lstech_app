@@ -11,8 +11,8 @@ import '../widgets/statisticsChart.dart';
 abstract class HistoryHelper {
   static Future<void> testDB() async {
     await DatabaseProvider.database;
-    //await DatabaseProvider.eraseDatabase();
-    //await DatabaseProvider.database;
+    await DatabaseProvider.eraseDatabase();
+    await DatabaseProvider.database;
 
     var test = SessionTableModel(sessionType: 'intervals');
     await DatabaseProvider.insert(SessionTableModel.tableName, test);
