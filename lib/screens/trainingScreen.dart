@@ -13,7 +13,6 @@ import '../databases/session_model.dart';
 import '../databases/reading_model.dart';
 import '../databases/standard_reading_model.dart';
 import '../databases/session_segment_model.dart';
-import '../databases/base_db.dart';
 import '../widgets/statisticsChart.dart';
 
 class MyTrainingScreen extends StatefulWidget {

@@ -15,7 +15,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
   Future historyFuture;
   SingleChildScrollView historyList;
 
-  Map<String,dynamic> selectedSession;
+  Map<String, dynamic> selectedSession;
 
   Future<Widget> buildHistory() async {
     //await HistoryHelper.testDB();
@@ -39,7 +39,9 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
         await HistoryHelper.getListOfStartTimesAndDurations();
 
     var usedColor = Constants.greyColor;
+    int colorIndex = 0;
     sessionsDataList.forEach((s) {
+      colorIndex++;
       var indexSeconds = DateTime.fromMillisecondsSinceEpoch(s['startTime'])
           .toString()
           .indexOf('.');
@@ -49,9 +51,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
         DateTime.fromMillisecondsSinceEpoch(s['startTime'])
             .toString()
             .substring(0, indexSeconds - 3),
-        usedColor == Constants.greyColor
-            ? Constants.greyColorSelected
-            : Constants.greyColor,
+        colorIndex % 2 == 1 ? Constants.greyColorSelected : Constants.greyColor,
         s,
         onSessionSelected,
       ));
@@ -72,7 +72,7 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
     return historyList;
   }
 
-  void onSessionSelected(Map<String,dynamic> session) {
+  void onSessionSelected(Map<String, dynamic> session) {
     setState(() {
       selectedSession = session;
     });
@@ -102,7 +102,9 @@ class _MyHistoryScreenState extends State<MyHistoryScreen> {
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           case ConnectionState.done:
-            return selectedSession == null ? historyList:MyTrainingScreenSummary(selectedSession, onBackToList);
+            return selectedSession == null
+                ? historyList
+                : MyTrainingScreenSummary(selectedSession, onBackToList);
           default:
             return Center(child: CircularProgressIndicator());
         }

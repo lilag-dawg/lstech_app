@@ -5,11 +5,16 @@ import '../models/streamPackage.dart';
 
 import 'iconTitle.dart';
 
+import '../databases/reading_model.dart';
+import '../databases/standard_reading_model.dart';
+
 class MySecondaryDashBoardData extends StatelessWidget {
   final IconData widgetIcon;
   final String widgetTitle;
   final String widgetUnits;
   final StreamPackage widgetData;
+
+  Text previousDataString;
 
   MySecondaryDashBoardData(
       this.widgetIcon, this.widgetTitle, this.widgetData, this.widgetUnits);
@@ -37,18 +42,45 @@ class MySecondaryDashBoardData extends StatelessWidget {
         final value = snapshot.data;
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
-          return Text(
-            value.toString(),
-            style: TextStyle(
-              fontSize:
-                  (MediaQuery.of(context).size.width * (1.2 / 5.5) / 89.766) *
-                      40,
-            ),
+          return FutureBuilder<void>(
+            future: storeData(value),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return previousDataString;
+                case ConnectionState.active:
+                case ConnectionState.waiting:
+                  return previousDataString;
+                case ConnectionState.done:
+                  return Text(
+                    value.toString(),
+                    style: TextStyle(
+                      fontSize: (MediaQuery.of(context).size.width *
+                              (1.2 / 5.5) /
+                              89.766) *
+                          40,
+                    ),
+                  );
+                default:
+                  return previousDataString;
+              }
+            },
           );
         }
         return _buildNoDataPresent(context);
       },
     );
+  }
+
+  void storeData(int value) async {
+
+    var reading = ReadingTableModel(
+            timeOfReading: DateTime.now().millisecondsSinceEpoch,
+            readingType: ReadingTableModel.powerTypeString,
+            sessionId: queriedSessions[queriedSessions.length - 1]
+                ['sessionId']);
+        await DatabaseProvider.insert(ReadingTableModel.tableName, readingTest);
+
   }
 
   Widget _buildNoDataPresent(BuildContext context) {
