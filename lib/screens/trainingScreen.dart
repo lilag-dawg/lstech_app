@@ -27,6 +27,8 @@ class MyTrainingScreen extends StatefulWidget {
 class _MyTrainingScreenState extends State<MyTrainingScreen> {
   bool _isTrainingOver = false;
   Map<String, dynamic> selectedSession;
+  int currentSessionId;
+  int segmentStartValue;
 
   void _onEndOfTrainingClicked(bool isEndOfTraining) {
     setState(() {
@@ -35,12 +37,49 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   }
 
   void updateSession(String sessionStateString) async {
-    if(sessionStateString == 'Démarrer') {
-      var test = SessionTableModel(sessionType: 'intervals');
-      await DatabaseProvider.insert(SessionTableModel.tableName, test);
+    if (sessionStateString == 'Démarrer') {
+      //start
+      _isTrainingOver = false;
+      var session =
+          SessionTableModel(sessionType: SessionTableModel.normalTypeString);
+      await DatabaseProvider.insert(SessionTableModel.tableName, session);
+
+      var queriedSessions =
+          await DatabaseProvider.query(SessionTableModel.tableName);
+      currentSessionId =
+          queriedSessions[queriedSessions.length - 1]['sessionId'];
+
+      segmentStartValue = DateTime.now().millisecondsSinceEpoch;
     }
-    if(sessionStateString == 'Résumer'){}
-    if(sessionStateString == 'Pause'){}
+    if (sessionStateString == SessionSegmentTableModel.trainingTypeString) {
+      //resume
+      var stopStartValue = DateTime.now().millisecondsSinceEpoch;
+
+      var segment = SessionSegmentTableModel(
+          segmentType: SessionSegmentTableModel.pauseTypeString,
+          startTime: segmentStartValue,
+          endTime: stopStartValue,
+          sessionId: currentSessionId);
+      await DatabaseProvider.insert(
+          SessionSegmentTableModel.tableName, segment);
+
+      segmentStartValue = stopStartValue;
+    }
+
+    if (sessionStateString == SessionSegmentTableModel.pauseTypeString) {
+      //pause
+      var stopStartValue = DateTime.now().millisecondsSinceEpoch;
+
+      var segment = SessionSegmentTableModel(
+          segmentType: SessionSegmentTableModel.trainingTypeString,
+          startTime: segmentStartValue,
+          endTime: stopStartValue,
+          sessionId: currentSessionId);
+      await DatabaseProvider.insert(
+          SessionSegmentTableModel.tableName, segment);
+
+      segmentStartValue = stopStartValue;
+    }
   }
 
   Widget _body(BuildContext context) {
@@ -116,7 +155,13 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
     var listOfSessions = await HistoryHelper.getListOfStartTimesAndDurations();
     selectedSession = listOfSessions[0];
 
-    return Container();
+    return MyTrainingScreenSummary(selectedSession, onBackToList);
+  }
+
+  void onBackToList() {
+    setState(() {
+      selectedSession = null;
+    });
   }
 
   void goToHistory() {

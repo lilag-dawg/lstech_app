@@ -3,6 +3,7 @@ import 'package:lstech_app/widgets/iconTitle.dart';
 import 'dart:math' as math;
 
 import '../constants.dart' as Constants;
+import '../databases/session_segment_model.dart';
 
 IconData playPauseIcon = Icons.play_arrow;
 String sessionStateString = 'Démarrer';
@@ -28,7 +29,7 @@ class _MyArcState extends State<MyArc> {
 
   Future<void> _playPausePressed() async {
     if(!isSessionInitiated) {
-      await widget.updateSession(sessionStateString);
+      await widget.updateSession('Démarrer');
       playPauseIcon = Icons.pause;
       setState(() {
         sessionStateString = 'Pause';
@@ -37,7 +38,7 @@ class _MyArcState extends State<MyArc> {
       });
     }
     else if(isPlayShown){
-      widget.updateSession(sessionStateString);
+      await widget.updateSession(SessionSegmentTableModel.pauseTypeString);
       setState(() {
         playPauseIcon = Icons.pause;
         sessionStateString = 'Pause';
@@ -45,11 +46,11 @@ class _MyArcState extends State<MyArc> {
       });
     }
     else{
-      widget.updateSession(sessionStateString);
+      await widget.updateSession(SessionSegmentTableModel.trainingTypeString);
       setState(() {
         playPauseIcon = Icons.play_arrow;
-        sessionStateString = 'Résumer';
-        isPlayShown = true;       
+        sessionStateString = 'Reprendre';
+        isPlayShown = true;
       });
     }
   }
@@ -69,9 +70,19 @@ class _MyArcState extends State<MyArc> {
     });
   }
 
+  void endTraining() {
+    isSessionInitiated = false;
+    setState(() {
+        playPauseIcon = Icons.play_arrow;
+        sessionStateString = 'Démarrer';
+        isPlayShown = true;
+      });
+    widget.endOfTrainingClicked();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return isRaised? _actionBarRaised(_height, widget.width, offsetStack, _updateState, widget.endOfTrainingClicked, _playPausePressed): _actionBarReduced(_height, widget.width, offsetStack, _updateState);
+    return isRaised? _actionBarRaised(_height, widget.width, offsetStack, _updateState, endTraining, _playPausePressed): _actionBarReduced(_height, widget.width, offsetStack, _updateState);
   }
 }
 
@@ -136,7 +147,7 @@ Widget _actionBarRaised(double height, double width, double offsetStack, Functio
                       ],
                     ),
                     onPressed: (){
-                      endOfTrainingClicked(true);
+                      endOfTrainingClicked();
                     },
                   ),
                 ],

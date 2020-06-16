@@ -5,7 +5,11 @@ class SessionTableModel extends BaseModel {
   static String tableName = 'session_table';
 
   int sessionId;
-  String sessionType;
+  String sessionType; //check enum {"intervals","sprint","normal"} 
+
+  static const String intervalsTypeString = 'intervals';
+  static const String sprintTypeString = 'sprint';
+  static const String normalTypeString = 'normal';
 
   static String primaryKeyWhereString = 'sessionId = ?';
 

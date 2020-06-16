@@ -43,7 +43,6 @@ class DatabaseProvider {
     await db.execute('''
     CREATE TABLE session_table (
       sessionId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-      elapsedTime TEXT, 
       sessionType TEXT
     );
     ''');

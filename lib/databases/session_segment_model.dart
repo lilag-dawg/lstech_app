@@ -10,6 +10,9 @@ class SessionSegmentTableModel extends BaseModel {
   int endTime; //millisecondsSinceEpoch
   int sessionId;
 
+  static const String pauseTypeString = 'pause';
+  static const String trainingTypeString = 'training';
+
   static String primaryKeyWhereString = 'sessionSegmentId = ?';
 
   SessionSegmentTableModel(
