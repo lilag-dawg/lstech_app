@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lstech_app/databases/reading_model.dart';
+import 'package:lstech_app/databases/reading_value_model.dart';
 import 'package:lstech_app/widgets/trainingDrawerHalfCircle.dart';
 import 'package:provider/provider.dart';
 import '../widgets/secondaryDashBoardData.dart';
@@ -10,8 +12,9 @@ import '../constants.dart' as Constants;
 import '../screens/trainingSummaryScreen.dart';
 import '../databases/base_db.dart';
 import '../databases/session_model.dart';
-import '../databases/session_segment_model.dart';
 
+import '../databases/session_segment_model.dart';
+import '../widgets/statisticsChart.dart';
 
 class MyTrainingScreen extends StatefulWidget {
   MyTrainingScreen(this.pageTabController);
@@ -104,9 +107,9 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE',
-                        wattzaManager.getRpmPackage(), 'RPM', currentSessionId), // 100
+                        wattzaManager.getRpmPackage(), 'RPM', currentSessionId, ReadingTableModel.cadenceTypeString, ReadingValueTableModel.cadenceTableName), // 100
                     MySecondaryDashBoardData(
-                        Icons.location_on, 'DISTANCE', null, 'm', currentSessionId), // 120
+                        Icons.location_on, 'DISTANCE', null, 'm', null, null, null), // 120
                   ],
                 ),
                 SizedBox(height: 20),
@@ -114,9 +117,9 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     MySecondaryDashBoardData(
-                        Icons.directions_bike, 'VITESSE', null, 'kmph',currentSessionId), // 12.5
+                        Icons.directions_bike, 'VITESSE', null, 'kmph', null, null, null), // 12.5
                     MySecondaryDashBoardData(
-                        Icons.alarm, 'TEMPS', null, 'min', currentSessionId), // 00:00
+                        Icons.alarm, 'TEMPS', null, 'min', null, null, null), // 00:00
                   ],
                 ),
                 SizedBox(height: 20),
@@ -124,7 +127,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     MySecondaryDashBoardData(Icons.favorite,
-                        'FRÉQUENCE CARDIAQUE', null, 'BPM', currentSessionId), // 12.5
+                        'FRÉQUENCE CARDIAQUE', null, 'BPM', null, null, null), // 12.5
                   ],
                 ),
               ],

@@ -1,15 +1,16 @@
 import '../databases/base_model.dart';
 
-class StandardReadingTableModel extends BaseModel { //Cadence, Power
+class ReadingValueTableModel extends BaseModel { //Cadence, Power
 
   static String cadenceTableName = 'cadence_reading_table';
   static String powerTableName = 'power_reading_table';
+  static String gpsTableName = 'power_reading_table';
   int value;
   int readingId;
 
   static String primaryKeyWhereString = 'readingId = ?';
 
-  StandardReadingTableModel({
+  ReadingValueTableModel({
     this.value,
     this.readingId,
   });
@@ -22,8 +23,8 @@ class StandardReadingTableModel extends BaseModel { //Cadence, Power
     return map;
   }
 
-  static StandardReadingTableModel fromMap(Map<String, dynamic> map) {
-    return StandardReadingTableModel(
+  static ReadingValueTableModel fromMap(Map<String, dynamic> map) {
+    return ReadingValueTableModel(
       value: map['value'],
       readingId: map['readingId'],
     );

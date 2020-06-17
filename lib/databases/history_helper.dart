@@ -3,7 +3,7 @@ import 'package:lstech_app/databases/gps_reading_model.dart';
 
 import '../databases/session_model.dart';
 import '../databases/reading_model.dart';
-import '../databases/standard_reading_model.dart';
+import '../databases/reading_value_model.dart';
 import '../databases/session_segment_model.dart';
 import '../databases/base_db.dart';
 import '../widgets/statisticsChart.dart';
@@ -53,12 +53,12 @@ abstract class HistoryHelper {
             await DatabaseProvider.query(ReadingTableModel.tableName);
         //print(queriedreadings);
 
-        var powerReading = StandardReadingTableModel(
+        var powerReading = ReadingValueTableModel(
             value: i,
             readingId: queriedreadings[queriedreadings.length - 1]
                 ['readingId']);
         await DatabaseProvider.insert(
-            StandardReadingTableModel.powerTableName, powerReading);
+            ReadingValueTableModel.powerTableName, powerReading);
 
         readingTest = ReadingTableModel(
             timeOfReading: startValue + i * 50000,
@@ -70,12 +70,12 @@ abstract class HistoryHelper {
         queriedreadings =
             await DatabaseProvider.query(ReadingTableModel.tableName);
 
-        var cadenceReading = StandardReadingTableModel(
+        var cadenceReading = ReadingValueTableModel(
             value: i % 7,
             readingId: queriedreadings[queriedreadings.length - 1]
                 ['readingId']);
         await DatabaseProvider.insert(
-            StandardReadingTableModel.cadenceTableName, cadenceReading);
+            ReadingValueTableModel.cadenceTableName, cadenceReading);
       }
       var powerTest = await getStatisticsFromReadingsType(
           queriedSessions[queriedSessions.length - 1]['sessionId'],
@@ -186,10 +186,10 @@ getTableNameFromReadingType :
     String tableName;
     switch (type) {
       case ReadingTableModel.cadenceTypeString:
-        tableName = StandardReadingTableModel.cadenceTableName;
+        tableName = ReadingValueTableModel.cadenceTableName;
         break;
       case ReadingTableModel.powerTypeString:
-        tableName = StandardReadingTableModel.powerTableName;
+        tableName = ReadingValueTableModel.powerTableName;
         break;
       case ReadingTableModel.gpsTypeString:
         tableName = GPSReadingTableModel.tableName;
@@ -216,14 +216,14 @@ associateTimeAndReadingValues :
       switch (reading.readingType) {
         case ReadingTableModel.cadenceTypeString:
           var readingValue =
-              StandardReadingTableModel.fromMap(readingValueList[0]);
+              ReadingValueTableModel.fromMap(readingValueList[0]);
           return {
             'timeOfReading': reading.timeOfReading,
             'value': readingValue.value
           };
         case ReadingTableModel.powerTypeString:
           var readingValue =
-              StandardReadingTableModel.fromMap(readingValueList[0]);
+              ReadingValueTableModel.fromMap(readingValueList[0]);
           return {
             'timeOfReading': reading.timeOfReading,
             'value': readingValue.value

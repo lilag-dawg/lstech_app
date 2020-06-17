@@ -7,7 +7,7 @@ import 'iconTitle.dart';
 
 import '../databases/reading_model.dart';
 import '../databases/base_db.dart';
-import '../databases/standard_reading_model.dart';
+import '../databases/reading_value_model.dart';
 
 class MySecondaryDashBoardData extends StatelessWidget {
   final IconData widgetIcon;
@@ -15,11 +15,19 @@ class MySecondaryDashBoardData extends StatelessWidget {
   final String widgetUnits;
   final StreamPackage widgetData;
   final int currentSessionId;
+  final String readingType;
+  final String readingValueTableName;
 
-  Text previousDataString;
+  Text dataString;
 
   MySecondaryDashBoardData(
-      this.widgetIcon, this.widgetTitle, this.widgetData, this.widgetUnits, this.currentSessionId);
+      this.widgetIcon,
+      this.widgetTitle,
+      this.widgetData,
+      this.widgetUnits,
+      this.currentSessionId,
+      this.readingType,
+      this.readingValueTableName);
 
   Widget _buildConnextionStatus(BuildContext context) {
     return StreamBuilder<BluetoothDeviceState>(
@@ -45,26 +53,18 @@ class MySecondaryDashBoardData extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
           return FutureBuilder<void>(
-            future: storeData(value),
+            future: storeData(value, context),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return previousDataString;
+                  return dataString;
                 case ConnectionState.active:
                 case ConnectionState.waiting:
-                  return previousDataString;
+                  return dataString;
                 case ConnectionState.done:
-                  return Text(
-                    value.toString(),
-                    style: TextStyle(
-                      fontSize: (MediaQuery.of(context).size.width *
-                              (1.2 / 5.5) /
-                              89.766) *
-                          40,
-                    ),
-                  );
+                  return dataString;
                 default:
-                  return previousDataString;
+                  return dataString;
               }
             },
           );
@@ -74,29 +74,24 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Future<void> storeData(int value) async {
-
+  Future<void> storeData(int value, BuildContext context) async {
     var reading = ReadingTableModel(
-            timeOfReading: DateTime.now().millisecondsSinceEpoch,
-            readingType: ReadingTableModel.powerTypeString,
-            sessionId: currentSessionId);
-        await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
+        timeOfReading: DateTime.now().millisecondsSinceEpoch,
+        readingType: readingType,
+        sessionId: currentSessionId);
+    await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
 
-    var standard = StandardReadingTableModel(
-        value: value,
-        readingId: currentSessionId);
-    await DatabaseProvider.insert(
-        getDataType(), standard);
-  }
+    var readingValue =
+        ReadingValueTableModel(value: value, readingId: currentSessionId);
+    await DatabaseProvider.insert(readingValueTableName, readingValue);
 
-  String getDataType(){
-    switch(widgetTitle){
-      case 'RPM':
-        return StandardReadingTableModel.cadenceTableName;
-        break;
-      default:
-        return null; //dont know what happens if trying to insert something type null in db.
-    }
+    dataString = Text(
+      value.toString(),
+      style: TextStyle(
+        fontSize:
+            (MediaQuery.of(context).size.width * (1.2 / 5.5) / 89.766) * 40,
+      ),
+    );
   }
 
   Widget _buildNoDataPresent(BuildContext context) {
@@ -112,6 +107,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dataString = _buildNoDataPresent(context);
     return Column(
       children: <Widget>[
         MyIconTitle(
