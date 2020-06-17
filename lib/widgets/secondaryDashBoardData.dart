@@ -8,28 +8,23 @@ import 'iconTitle.dart';
 import '../databases/reading_model.dart';
 import '../databases/base_db.dart';
 import '../databases/reading_value_model.dart';
+import '../databases/history_helper.dart';
 
 class MySecondaryDashBoardData extends StatelessWidget {
   final IconData widgetIcon;
   final String widgetTitle;
   final String widgetUnits;
   final StreamPackage widgetData;
-  final int currentSessionId;
   final String readingType;
   final String readingValueTableName;
+  final bool isTrainingStarted;
 
   //Text dataString;
 
-  MySecondaryDashBoardData(
-      this.widgetIcon,
-      this.widgetTitle,
-      this.widgetData,
-      this.widgetUnits,
-      this.currentSessionId,
-      this.readingType,
-      this.readingValueTableName);
+  MySecondaryDashBoardData(this.widgetIcon, this.widgetTitle, this.widgetData,
+      this.widgetUnits, this.readingType, this.readingValueTableName, this.isTrainingStarted);
 
-  Widget _buildConnextionStatus(BuildContext context,Text dataString) {
+  Widget _buildConnextionStatus(BuildContext context, Text dataString) {
     return StreamBuilder<BluetoothDeviceState>(
       stream: widgetData.getConnexion(),
       builder: (c, snapshot) {
@@ -45,7 +40,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Widget _buildDataStream(BuildContext context,Text dataString) {
+  Widget _buildDataStream(BuildContext context, Text dataString) {
     return StreamBuilder<int>(
       stream: widgetData.getStream(),
       builder: (c, snapshot) {
@@ -53,7 +48,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
           return FutureBuilder<void>(
-            future: storeData(value, context, dataString),
+            future: updateData(value, context, dataString),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -74,17 +69,12 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Future<void> storeData(int value, BuildContext context, Text dataString) async {
-    var reading = ReadingTableModel(
-        timeOfReading: DateTime.now().millisecondsSinceEpoch,
-        readingType: readingType,
-        sessionId: currentSessionId);
-    await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
+  Future<void> updateData(int value, BuildContext context, Text dataString) async {
 
-    var readingValue =
-        ReadingValueTableModel(value: value, readingId: currentSessionId);
-    await DatabaseProvider.insert(readingValueTableName, readingValue);
-
+    if(isTrainingStarted) {
+      await storeData(value, context, dataString);
+    }
+    
     dataString = Text(
       value.toString(),
       style: TextStyle(
@@ -92,6 +82,19 @@ class MySecondaryDashBoardData extends StatelessWidget {
             (MediaQuery.of(context).size.width * (1.2 / 5.5) / 89.766) * 40,
       ),
     );
+  }
+
+  Future<void> storeData(
+      int value, BuildContext context, Text dataString) async {
+    var reading = ReadingTableModel(
+        timeOfReading: DateTime.now().millisecondsSinceEpoch,
+        readingType: readingType,
+        sessionId: await HistoryHelper.getMostRecentSessionId());
+    await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
+
+    var readingValue = ReadingValueTableModel(
+        value: value, readingId: await HistoryHelper.getMostRecentSessionId());
+    await DatabaseProvider.insert(readingValueTableName, readingValue);
   }
 
   Widget _buildNoDataPresent(BuildContext context) {
@@ -118,7 +121,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
         Row(
           children: <Widget>[
             (widgetData != null)
-                ? _buildConnextionStatus(context,dataString)
+                ? _buildConnextionStatus(context, dataString)
                 : _buildNoDataPresent(context),
             Container(
               height:

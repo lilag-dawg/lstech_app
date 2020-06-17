@@ -119,6 +119,19 @@ getListOfStartTimesAndDurations :
     return sessionsDataList;
   }
 
+  /*
+getMostRecentSessionId : 
+  - Returns the most recent sessionID, if a session is currently ongoing, it returns the ongoing session
+*/
+  static Future<int> getMostRecentSessionId() async {
+    await DatabaseProvider.database;
+    var sessionsList =
+        await DatabaseProvider.query(SessionTableModel.tableName);
+    if (sessionsList != null) {
+      return sessionsList[sessionsList.length - 1]['sessionId'];
+    }
+  }
+
 /*
 getStatisticsFromReadingsType : 
   - for cadence and power, return average and max values for a specific sessionId
@@ -252,7 +265,8 @@ associateTimeAndReadingValues :
       for (int i = 0; i < sessionSegmentsList.length; i++) {
         var sessionSegment =
             SessionSegmentTableModel.fromMap(sessionSegmentsList[i]);
-        if (sessionSegment.segmentType == SessionSegmentTableModel.trainingTypeString) {
+        if (sessionSegment.segmentType ==
+            SessionSegmentTableModel.trainingTypeString) {
           timeSpentTraining +=
               sessionSegment.endTime - sessionSegment.startTime;
         }

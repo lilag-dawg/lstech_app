@@ -29,17 +29,22 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   Map<String, dynamic> selectedSession;
   int currentSessionId;
   int segmentStartValue;
+  bool isTrainingOngoing;
 
-  void _onEndOfTrainingClicked(){
+  void _onEndOfTrainingClicked() {
     setState(() {
       _isTrainingOver = true;
+      isTrainingOngoing = false;
     });
   }
 
   Future<void> updateSession(String sessionStateString) async {
     if (sessionStateString == 'Démarrer') {
       //start
-      _isTrainingOver = false;
+      setState(() {
+        _isTrainingOver = false;
+        isTrainingOngoing = true;
+      });
       var session =
           SessionTableModel(sessionType: SessionTableModel.normalTypeString);
       await DatabaseProvider.insert(SessionTableModel.tableName, session);
@@ -62,9 +67,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           startTime: segmentStartValue,
           endTime: stopStartValue,
           sessionId: currentSessionId);
-      await DatabaseProvider.insert(
-          SessionSegmentTableModel.tableName, segment).then((_) => segmentStartValue = stopStartValue);
-
+      await DatabaseProvider.insert(SessionSegmentTableModel.tableName, segment)
+          .then((_) => segmentStartValue = stopStartValue);
     }
 
     if (sessionStateString == SessionSegmentTableModel.pauseTypeString) {
@@ -78,10 +82,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           startTime: segmentStartValue,
           endTime: stopStartValue,
           sessionId: currentSessionId);
-      await DatabaseProvider.insert(
-          SessionSegmentTableModel.tableName, segment).then((_) => segmentStartValue = stopStartValue);
-
-      
+      await DatabaseProvider.insert(SessionSegmentTableModel.tableName, segment)
+          .then((_) => segmentStartValue = stopStartValue);
     }
   }
 
@@ -106,20 +108,25 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    MySecondaryDashBoardData(Icons.rotate_right, 'CADENCE',
-                        wattzaManager.getRpmPackage(), 'RPM', currentSessionId, ReadingTableModel.cadenceTypeString, ReadingValueTableModel.cadenceTableName), // 100
                     MySecondaryDashBoardData(
-                        Icons.location_on, 'DISTANCE', null, 'm', null, null, null), // 120
+                        Icons.rotate_right,
+                        'CADENCE',
+                        wattzaManager.getRpmPackage(),
+                        'RPM',
+                        ReadingTableModel.cadenceTypeString,
+                        ReadingValueTableModel.cadenceTableName, isTrainingOngoing), // 100
+                    MySecondaryDashBoardData(Icons.location_on, 'DISTANCE',
+                        null, 'm', null, null, isTrainingOngoing), // 120
                   ],
                 ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    MySecondaryDashBoardData(Icons.directions_bike, 'VITESSE',
+                        null, 'kmph', null, null, isTrainingOngoing), // 12.5
                     MySecondaryDashBoardData(
-                        Icons.directions_bike, 'VITESSE', null, 'kmph', null, null, null), // 12.5
-                    MySecondaryDashBoardData(
-                        Icons.alarm, 'TEMPS', null, 'min', null, null, null), // 00:00
+                        Icons.alarm, 'TEMPS', null, 'min', null, null, isTrainingOngoing), // 00:00
                   ],
                 ),
                 SizedBox(height: 20),
@@ -127,7 +134,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     MySecondaryDashBoardData(Icons.favorite,
-                        'FRÉQUENCE CARDIAQUE', null, 'BPM', null, null, null), // 12.5
+                        'FRÉQUENCE CARDIAQUE', null, 'BPM', null, null, isTrainingOngoing), // 12.5
                   ],
                 ),
               ],
