@@ -147,6 +147,7 @@ getStatisticsFromReadingsType :
     int averageValue = 0;
 
     if (valuesList != null) {
+      print(readingType);
       if (valuesList.length > 0) {
         if (readingType == ReadingTableModel.cadenceTypeString ||
             readingType == ReadingTableModel.powerTypeString) {
@@ -222,7 +223,7 @@ associateTimeAndReadingValues :
     var reading = ReadingTableModel.fromMap(readingMap);
 
     var tableName = getTableNameFromReadingType(reading.readingType);
-    var readingValueList = await DatabaseProvider.queryByParameter(
+    var readingValueList = await DatabaseProvider.queryByParameter(      //********** Error here readingValueList is null********************//
         tableName, ReadingTableModel.primaryKeyWhereString, reading.readingId);
 
     if (readingValueList != null) {

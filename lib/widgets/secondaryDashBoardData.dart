@@ -9,28 +9,38 @@ import '../databases/reading_model.dart';
 import '../databases/base_db.dart';
 import '../databases/reading_value_model.dart';
 import '../databases/history_helper.dart';
+import '../databases/session_model.dart';
 
-class MySecondaryDashBoardData extends StatelessWidget {
+class MySecondaryDashBoardData extends StatefulWidget {
   final IconData widgetIcon;
   final String widgetTitle;
   final String widgetUnits;
   final StreamPackage widgetData;
   final String readingType;
   final String readingValueTableName;
-  final bool isTrainingStarted;
+  final bool isTrainingOngoing;
 
   //Text dataString;
 
   MySecondaryDashBoardData(this.widgetIcon, this.widgetTitle, this.widgetData,
-      this.widgetUnits, this.readingType, this.readingValueTableName, this.isTrainingStarted);
+      this.widgetUnits, this.readingType, this.readingValueTableName, this.isTrainingOngoing);
 
-  Widget _buildConnextionStatus(BuildContext context, Text dataString) {
+  @override
+  _MySecondaryDashBoardDataState createState() => _MySecondaryDashBoardDataState();
+}
+
+class _MySecondaryDashBoardDataState extends State<MySecondaryDashBoardData> {
+
+  Text dataString;
+
+
+  Widget _buildConnextionStatus(BuildContext context) {
     return StreamBuilder<BluetoothDeviceState>(
-      stream: widgetData.getConnexion(),
+      stream: widget.widgetData.getConnexion(),
       builder: (c, snapshot) {
         final state = snapshot.data;
         if (state == BluetoothDeviceState.connected) {
-          return _buildDataStream(context, dataString);
+          return _buildDataStream(context);
         }
         return Icon(
           Icons.cancel,
@@ -40,15 +50,17 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Widget _buildDataStream(BuildContext context, Text dataString) {
+  Widget _buildDataStream(BuildContext context) {
     return StreamBuilder<int>(
-      stream: widgetData.getStream(),
+      stream: widget.widgetData.getStream(),
       builder: (c, snapshot) {
         final value = snapshot.data;
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
+          //print(dataString.data);
+          //print(value);
           return FutureBuilder<void>(
-            future: updateData(value, context, dataString),
+            future: updateData(value, context),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -69,12 +81,13 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Future<void> updateData(int value, BuildContext context, Text dataString) async {
+  Future<void> updateData(int value, BuildContext context) async {
 
-    if(isTrainingStarted) {
-      await storeData(value, context, dataString);
+    if(widget.isTrainingOngoing) {
+      await storeData(value, context);
     }
-    
+    await DatabaseProvider.query(SessionTableModel.tableName); // need an await function to be executed in all cases - xd -
+
     dataString = Text(
       value.toString(),
       style: TextStyle(
@@ -85,16 +98,16 @@ class MySecondaryDashBoardData extends StatelessWidget {
   }
 
   Future<void> storeData(
-      int value, BuildContext context, Text dataString) async {
+      int value, BuildContext context) async {
     var reading = ReadingTableModel(
         timeOfReading: DateTime.now().millisecondsSinceEpoch,
-        readingType: readingType,
+        readingType: widget.readingType,
         sessionId: await HistoryHelper.getMostRecentSessionId());
     await DatabaseProvider.insert(ReadingTableModel.tableName, reading);
 
     var readingValue = ReadingValueTableModel(
         value: value, readingId: await HistoryHelper.getMostRecentSessionId());
-    await DatabaseProvider.insert(readingValueTableName, readingValue);
+    await DatabaseProvider.insert(widget.readingValueTableName, readingValue);
   }
 
   Widget _buildNoDataPresent(BuildContext context) {
@@ -110,18 +123,18 @@ class MySecondaryDashBoardData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Text dataString = _buildNoDataPresent(context);
+    dataString = _buildNoDataPresent(context);
     return Column(
       children: <Widget>[
         MyIconTitle(
-          widgetIcon,
-          widgetTitle,
+          widget.widgetIcon,
+          widget.widgetTitle,
           widgetFontWeight: FontWeight.bold,
         ),
         Row(
           children: <Widget>[
-            (widgetData != null)
-                ? _buildConnextionStatus(context, dataString)
+            (widget.widgetData != null)
+                ? _buildConnextionStatus(context)
                 : _buildNoDataPresent(context),
             Container(
               height:
@@ -130,7 +143,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  widgetUnits,
+                  widget.widgetUnits,
                   style: TextStyle(
                     fontSize: (MediaQuery.of(context).size.width *
                             (1.2 / 5.5) /
@@ -146,3 +159,4 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 }
+

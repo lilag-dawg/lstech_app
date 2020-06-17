@@ -29,7 +29,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   Map<String, dynamic> selectedSession;
   int currentSessionId;
   int segmentStartValue;
-  bool isTrainingOngoing;
+  bool isTrainingOngoing = false;
 
   void _onEndOfTrainingClicked() {
     setState(() {
