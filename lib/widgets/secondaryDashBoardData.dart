@@ -18,7 +18,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
   final String readingType;
   final String readingValueTableName;
 
-  Text dataString;
+  //Text dataString;
 
   MySecondaryDashBoardData(
       this.widgetIcon,
@@ -29,13 +29,13 @@ class MySecondaryDashBoardData extends StatelessWidget {
       this.readingType,
       this.readingValueTableName);
 
-  Widget _buildConnextionStatus(BuildContext context) {
+  Widget _buildConnextionStatus(BuildContext context,Text dataString) {
     return StreamBuilder<BluetoothDeviceState>(
       stream: widgetData.getConnexion(),
       builder: (c, snapshot) {
         final state = snapshot.data;
         if (state == BluetoothDeviceState.connected) {
-          return _buildDataStream(context);
+          return _buildDataStream(context, dataString);
         }
         return Icon(
           Icons.cancel,
@@ -45,7 +45,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Widget _buildDataStream(BuildContext context) {
+  Widget _buildDataStream(BuildContext context,Text dataString) {
     return StreamBuilder<int>(
       stream: widgetData.getStream(),
       builder: (c, snapshot) {
@@ -53,7 +53,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
           return FutureBuilder<void>(
-            future: storeData(value, context),
+            future: storeData(value, context, dataString),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -74,7 +74,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
     );
   }
 
-  Future<void> storeData(int value, BuildContext context) async {
+  Future<void> storeData(int value, BuildContext context, Text dataString) async {
     var reading = ReadingTableModel(
         timeOfReading: DateTime.now().millisecondsSinceEpoch,
         readingType: readingType,
@@ -107,7 +107,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dataString = _buildNoDataPresent(context);
+    Text dataString = _buildNoDataPresent(context);
     return Column(
       children: <Widget>[
         MyIconTitle(
@@ -118,7 +118,7 @@ class MySecondaryDashBoardData extends StatelessWidget {
         Row(
           children: <Widget>[
             (widgetData != null)
-                ? _buildConnextionStatus(context)
+                ? _buildConnextionStatus(context,dataString)
                 : _buildNoDataPresent(context),
             Container(
               height:
