@@ -66,6 +66,14 @@ flutter:
    - assets/lstech_text_only.jpg
    - assets/lstech_ls_only.jpg
    - assets/lstech_tech_only.jpg
+   - assets/avgPower.jpg
+   - assets/maxPower.jpg
+   - assets/medianPower.jpg
+   - assets/crankImage.jpg
+   - assets/calendarImage.jpg
+   - assets/weightImage.jpg
+   - assets/heightImage.jpg
+   - assets/genderImage.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

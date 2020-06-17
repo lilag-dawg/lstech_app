@@ -226,7 +226,7 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
           SizedBox(height: 20),
           _dataSummary(
               context,
-              Icons.offline_bolt,
+              Icons.rotate_right,
               'CADENCE',
               cadenceStats != null ? cadenceStats['maxValue'].toString() : '--',
               cadenceStats != null
@@ -236,7 +236,7 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
               true),
           SizedBox(height: 20),
           _dataSummary(
-              context, Icons.offline_bolt, 'VITESSE', '--', '--', 'km/h', true),
+              context, Icons.directions_bike, 'VITESSE', '--', '--', 'km/h', true),
         ],
       ),
     );
@@ -286,7 +286,7 @@ Widget _dataSummary(BuildContext context, IconData icon, String title,
         SizedBox(width: 20),
         Container(
             width: 140,
-            child: MyIconTitle(Icons.offline_bolt, title,
+            child: MyIconTitle(icon, title,
                 widgetFontWeight: FontWeight.bold)),
         SizedBox(width: 10),
         Container(width: 2, height: 60, color: Colors.black),
