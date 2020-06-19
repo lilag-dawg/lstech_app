@@ -65,11 +65,12 @@ class _MyNavigationBarState extends State<MyNavigationBar>
     screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: CustomAppBar(pageTabController: pageTabController, tabController: tabController),
+      body: CustomAppBar(
+          pageTabController: pageTabController, tabController: tabController),
       bottomNavigationBar: PreferredSize(
         preferredSize: Size.fromHeight(25),
         child: TabBar(
-          tabs:buildTabs(),
+          tabs: buildTabs(),
           controller: pageTabController,
           labelColor: Colors.black,
           unselectedLabelColor: Colors.blue,

@@ -18,17 +18,14 @@ class MyTrainingScreen extends StatefulWidget {
 }
 
 class _MyTrainingScreenState extends State<MyTrainingScreen> {
-
   bool _isTrainingOver = false;
-  Map<String,dynamic> selectedSession;
+  Map<String, dynamic> selectedSession;
 
   void _onEndOfTrainingClicked(bool isEndOfTraining) {
     setState(() {
       _isTrainingOver = true;
     });
   }
-
-  
 
   Widget _body(BuildContext context) {
     final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
@@ -45,7 +42,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   Row(
                     children: <Widget>[
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * (0.7 / 5.5)),
+                          width:
+                              MediaQuery.of(context).size.width * (0.7 / 5.5)),
                       MyPrimaryDashBoardData(),
                     ],
                   ),
@@ -62,8 +60,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      MySecondaryDashBoardData(
-                          Icons.directions_bike, 'VITESSE', null, 'kmph'), // 12.5
+                      MySecondaryDashBoardData(Icons.directions_bike, 'VITESSE',
+                          null, 'kmph'), // 12.5
                       MySecondaryDashBoardData(
                           Icons.alarm, 'TEMPS', null, 'min'), // 00:00
                     ],
@@ -83,7 +81,8 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
           Positioned(
             top: MediaQuery.of(context).size.height -
                 (Constants.appBarHeight +
-                    Constants.trainingStartStopWidgetHeight)+1,
+                    Constants.trainingStartStopWidgetHeight) +
+                1,
             child: Container(
               height: 200,
               width: MediaQuery.of(context).size.width,
@@ -133,7 +132,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isTrainingOver == false? _body(context):futureBody(),
+      body: _isTrainingOver == false ? _body(context) : futureBody(),
       backgroundColor: Constants.backGroundColor,
     );
   }

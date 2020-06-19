@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import '../constants.dart' as Constants;
 
 class HeightWeightCrankDialog extends StatefulWidget {
-
   final double initialValue;
   final bool isHeight;
   final bool isWeight;
   final bool isCrank;
 
-  HeightWeightCrankDialog({@required this.initialValue, @required this.isHeight, @required this.isWeight, @required this.isCrank});
+  HeightWeightCrankDialog(
+      {@required this.initialValue,
+      @required this.isHeight,
+      @required this.isWeight,
+      @required this.isCrank});
 
   @override
   _HeightWeightDialogState createState() => _HeightWeightDialogState();
 }
 
 class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
-
   List<double> _maxValues = [500, 250, 100]; // Kg, Cm, Cm
   List<double> _minValues = [20, 50, 0]; // Kg, Cm, Cm
   double _measure;
@@ -35,18 +37,18 @@ class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
   void _removeButtonClicked() {
     if (_measure > _minValues[_profilIndex]) {
       setState(() {
-          _measure -= 1;
+        _measure -= 1;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isCrank){
-        _profilIndex = 2;
-        title = 'Manivele du pédalier';
+    if (widget.isCrank) {
+      _profilIndex = 2;
+      title = 'Manivele du pédalier';
     }
-    if (widget.isHeight){
+    if (widget.isHeight) {
       _profilIndex = 1;
       title = 'Grandeur';
     }
@@ -54,8 +56,8 @@ class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
       _profilIndex = 0;
       title = 'Poid';
     }
-    if (!_isMeasureInitialized){
-      _measure  = widget.initialValue;
+    if (!_isMeasureInitialized) {
+      _measure = widget.initialValue;
       _isMeasureInitialized = true;
     }
     return AlertDialog(
@@ -67,14 +69,10 @@ class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
           Container(
             width: MediaQuery.of(context).size.width,
             child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold
-                ),
-              )
-            ),
+                child: Text(
+              title,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            )),
           ),
           Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +93,8 @@ class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
                   width: 90,
                   height: 50,
                   alignment: Alignment.center,
-                  child: Text(_measure.toString() + (widget.isWeight?' lbs':' cm'),
+                  child: Text(
+                      _measure.toString() + (widget.isWeight ? ' lbs' : ' cm'),
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 20,
@@ -119,7 +118,8 @@ class _HeightWeightDialogState extends State<HeightWeightCrankDialog> {
             child: RaisedButton(
               child: Text("Envoyer"),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop(_measure.toString());
+                Navigator.of(context, rootNavigator: true)
+                    .pop(_measure.toString());
               },
             ),
           ),

@@ -14,9 +14,15 @@ class SexDialogState extends State<SexDialog> {
   String _sexString;
   bool _isSexInitialized = false;
 
-  void _sexMaleCheckboxClicked(bool state) => setState(() { _sexString = 'Homme';});
-  void _sexFemaleCheckboxClicked(bool state) => setState(() { _sexString = 'Femme';});
-  void _sexOtherCheckboxClicked(bool state) => setState(() { _sexString = 'Autre';});
+  void _sexMaleCheckboxClicked(bool state) => setState(() {
+        _sexString = 'Homme';
+      });
+  void _sexFemaleCheckboxClicked(bool state) => setState(() {
+        _sexString = 'Femme';
+      });
+  void _sexOtherCheckboxClicked(bool state) => setState(() {
+        _sexString = 'Autre';
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +37,12 @@ class SexDialogState extends State<SexDialog> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width/3,
+            width: MediaQuery.of(context).size.width / 3,
             child: Center(
-              child: Text(
-                'Sexe ',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold
-                ),
-              )
-            ),
+                child: Text(
+              'Sexe ',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            )),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             Column(

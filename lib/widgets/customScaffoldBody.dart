@@ -95,4 +95,3 @@ class _CustomScaffoldBodyState extends State<CustomScaffoldBody> {
     );
   }
 }
-
