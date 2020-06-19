@@ -10,7 +10,7 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
   final String units = 'Watts';
   MyPrimaryDashBoardUI(this.widgetData);
 
-    Widget _buildConnextionStatus(double diamCircle1) {
+  Widget _buildConnextionStatus(double diamCircle1) {
     return StreamBuilder<BluetoothDeviceState>(
       stream: widgetData.getConnexion(),
       builder: (c, snapshot) {
@@ -27,7 +27,7 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
     );
   }
 
-    Widget _buildDataStream(double diamCircle1) {
+  Widget _buildDataStream(double diamCircle1) {
     return StreamBuilder<int>(
       stream: widgetData.getStream(),
       builder: (c, snapshot) {
@@ -35,36 +35,38 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active &&
             snapshot.hasData) {
           return Text(
-              value.toString(),
-              style: TextStyle(
-                fontSize: (diamCircle1/187.013)*90,
-              ),
-            );
+            value.toString(),
+            style: TextStyle(
+              fontSize: (diamCircle1 / 187.013) * 90,
+            ),
+          );
         }
         return _buildNoDataPresent(diamCircle1);
       },
     );
   }
 
-    Widget _buildNoDataPresent( double diamCircle1) {
+  Widget _buildNoDataPresent(double diamCircle1) {
     return Text(
-              "-",
-              style: TextStyle(
-                fontSize: (diamCircle1/187.013)*90,
-              ),
-            );
+      "-",
+      style: TextStyle(
+        fontSize: (diamCircle1 / 187.013) * 90,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double diamCircle1 = MediaQuery.of(context).size.width*(2.5/5.5);
-    double diamCircle2 = MediaQuery.of(context).size.width*(1.2/5.5);
+    double diamCircle1 = MediaQuery.of(context).size.width * (2.5 / 5.5);
+    double diamCircle2 = MediaQuery.of(context).size.width * (1.2 / 5.5);
 
     return Stack(
       children: <Widget>[
         Container(
-          width: diamCircle1 + (MediaQuery.of(context).size.width*(0.5/5.5)), 
-          height: diamCircle1 + (MediaQuery.of(context).size.width*(0.5/5.5)),
+          width:
+              diamCircle1 + (MediaQuery.of(context).size.width * (0.5 / 5.5)),
+          height:
+              diamCircle1 + (MediaQuery.of(context).size.width * (0.5 / 5.5)),
         ),
         Container(
           width: diamCircle1,
@@ -74,14 +76,12 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
                 ? _buildConnextionStatus(diamCircle1)
                 : _buildNoDataPresent(diamCircle1),
           ),
-          decoration: BoxDecoration(
-            color: Constants.greyColor,
-            shape: BoxShape.circle
-          ),
+          decoration:
+              BoxDecoration(color: Constants.greyColor, shape: BoxShape.circle),
         ),
         Positioned(
-          left: diamCircle1-(MediaQuery.of(context).size.width*(0.8/5.5)),
-          top: diamCircle1-(MediaQuery.of(context).size.width*(0.9/5.5)),
+          left: diamCircle1 - (MediaQuery.of(context).size.width * (0.8 / 5.5)),
+          top: diamCircle1 - (MediaQuery.of(context).size.width * (0.9 / 5.5)),
           child: Container(
             width: diamCircle2,
             height: diamCircle2,
@@ -89,18 +89,15 @@ class MyPrimaryDashBoardUI extends StatelessWidget {
               child: Text(
                 units,
                 style: TextStyle(
-                  fontSize: (diamCircle2/89.766)*25,
+                  fontSize: (diamCircle2 / 89.766) * 25,
                 ),
               ),
             ),
             decoration: BoxDecoration(
-              color: Constants.backGroundColor,
-              shape: BoxShape.circle
-            ),
+                color: Constants.backGroundColor, shape: BoxShape.circle),
           ),
         )
-      ], 
+      ],
     );
   }
 }
-

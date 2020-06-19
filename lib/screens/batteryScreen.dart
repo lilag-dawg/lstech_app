@@ -14,26 +14,22 @@ class MyBatteryScreen extends StatelessWidget {
             top: 20,
             left: 5,
             child: Container(
-              width: MediaQuery.of(context).size.width-10,
+              width: MediaQuery.of(context).size.width - 10,
               height: 80,
               decoration: BoxDecoration(
-                color: Constants.greyColor,
-                borderRadius: BorderRadius.circular(10)
-              ),
+                  color: Constants.greyColor,
+                  borderRadius: BorderRadius.circular(10)),
             ),
           ),
           Positioned(
             top: 40,
             left: 200,
             child: Container(
-              width: 180,
-              child: Text(
-                'Environ 35 heures d\'autonomie restantes',
-                style: TextStyle(
-                  fontSize: 18
-                ),
-              )
-            ),
+                width: 180,
+                child: Text(
+                  'Environ 35 heures d\'autonomie restantes',
+                  style: TextStyle(fontSize: 18),
+                )),
           ),
           Positioned(
             top: 40,
@@ -49,10 +45,7 @@ class MyBatteryScreen extends StatelessWidget {
             left: 60,
             child: Text(
               '100' + '%',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           )
         ],

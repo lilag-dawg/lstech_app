@@ -1,6 +1,7 @@
 import '../databases/base_model.dart';
 
-class StandardReadingTableModel extends BaseModel { //Cadence, Power
+class StandardReadingTableModel extends BaseModel {
+  //Cadence, Power
 
   static String cadenceTableName = 'cadence_reading_table';
   static String powerTableName = 'power_reading_table';

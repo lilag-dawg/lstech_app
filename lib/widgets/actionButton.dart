@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class MyActionButton extends StatelessWidget {
-
   final String title;
   final Function _onActionButtonPressed;
 
@@ -10,13 +9,13 @@ class MyActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width -10,
+      width: MediaQuery.of(context).size.width - 10,
       height: 30,
       child: FlatButton(
         child: Text(
           title,
         ),
-        onPressed: (){
+        onPressed: () {
           _onActionButtonPressed();
         },
       ),

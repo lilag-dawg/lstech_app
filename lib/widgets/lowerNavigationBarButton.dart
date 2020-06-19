@@ -28,16 +28,18 @@ class _LowerNavigationBarButtonState extends State<LowerNavigationBarButton> {
         ? widget._currentPage.page.toInt()
         : Constants.defaultPageIndex;
     return SizedBox(
-      width: screenWidth/3,
-      height: screenHeight>500? screenHeight/14:screenHeight/10,
+      width: screenWidth / 3,
+      height: screenHeight > 500 ? screenHeight / 14 : screenHeight / 10,
       child: FlatButton(
         highlightColor: Constants.greyColorSelected,
-        color: selectedPage == widget._pageNumber ? Constants.greyColorSelected : Constants.greyColor,
+        color: selectedPage == widget._pageNumber
+            ? Constants.greyColorSelected
+            : Constants.greyColor,
         child: Column(
           children: [
             Icon(
               widget._icon,
-              color:Colors.black,
+              color: Colors.black,
             ),
             Text(widget._text,
                 style: TextStyle(

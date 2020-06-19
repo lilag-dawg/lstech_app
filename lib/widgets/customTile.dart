@@ -49,10 +49,10 @@ class CustomTile extends StatelessWidget {
 
   Widget _buildTrailing() {
     return RaisedButton(
-      child: Text("Not Paired"),
-      onPressed: () {
-      _handlePressTrailing();
-    });
+        child: Text("Not Paired"),
+        onPressed: () {
+          _handlePressTrailing();
+        });
   }
 
   @override
