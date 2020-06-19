@@ -6,33 +6,34 @@ class WattzaDevice {
   List<BluetoothDeviceService> services = [];
   WattzaDevice._create(this.device);
 
-  static Future<WattzaDevice> create(BluetoothDevice d) async{
+  static Future<WattzaDevice> create(BluetoothDevice d) async {
     WattzaDevice wattza = WattzaDevice._create(d);
     await wattza._getWattzaServices(d);
     return wattza;
   }
 
-  Future<void> _getWattzaServices(BluetoothDevice d) async{
+  Future<void> _getWattzaServices(BluetoothDevice d) async {
     List<BluetoothService> dServices = await d.discoverServices();
-    await Future.forEach(dServices, (BluetoothService s) async{
-      await BluetoothDeviceService.create(s.uuid.toString().toUpperCase().substring(4, 8),s).then((onValue){
+    await Future.forEach(dServices, (BluetoothService s) async {
+      await BluetoothDeviceService.create(
+              s.uuid.toString().toUpperCase().substring(4, 8), s)
+          .then((onValue) {
         services.add(onValue);
       });
     });
   }
 
-  BluetoothDeviceService getService(String name){
+  BluetoothDeviceService getService(String name) {
     BluetoothDeviceService selected;
-    services.forEach((s){
-      if(s.name == name){
+    services.forEach((s) {
+      if (s.name == name) {
         selected = s;
       }
     });
     return selected;
   }
 
-  get getDevice{
+  get getDevice {
     return device;
   }
-
 }

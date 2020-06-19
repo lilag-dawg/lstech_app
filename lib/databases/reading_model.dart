@@ -1,7 +1,7 @@
 import '../databases/base_model.dart';
 import 'package:flutter/material.dart';
 
- /*enum readingTypes {
+/*enum readingTypes {
   gps,
   power,
   cadence,
@@ -12,7 +12,7 @@ class ReadingTableModel extends BaseModel {
 
   int readingId;
   int timeOfReading; //millisecondsSinceEpoch
-  String readingType; //check enum {"gps","power","cadence"} 
+  String readingType; //check enum {"gps","power","cadence"}
   int sessionId;
 
   static const String cadenceTypeString = 'cadence';

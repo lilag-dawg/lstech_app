@@ -1,15 +1,18 @@
 import 'package:flutter_blue/flutter_blue.dart';
 
-
 class BluetoothDeviceCharacteristic {
   final String characteristicName;
   final BluetoothCharacteristic characteristic;
 
-  BluetoothDeviceCharacteristic._create(this.characteristicName, this.characteristic);
+  BluetoothDeviceCharacteristic._create(
+      this.characteristicName, this.characteristic);
 
-  static Future<BluetoothDeviceCharacteristic> create(String characteristicName, BluetoothCharacteristic characteristic) async{
-    BluetoothDeviceCharacteristic myCharacteristic =  BluetoothDeviceCharacteristic._create(characteristicName, characteristic);
-    switch(characteristicName){
+  static Future<BluetoothDeviceCharacteristic> create(
+      String characteristicName, BluetoothCharacteristic characteristic) async {
+    BluetoothDeviceCharacteristic myCharacteristic =
+        BluetoothDeviceCharacteristic._create(
+            characteristicName, characteristic);
+    switch (characteristicName) {
       case "2A5B":
         await myCharacteristic.setNotification();
         break;
@@ -18,13 +21,12 @@ class BluetoothDeviceCharacteristic {
         break;
       case "2A63":
         await myCharacteristic.setNotification();
-        break;   
+        break;
     }
     return myCharacteristic;
-
   }
 
-  Future<void> setNotification() async{
+  Future<void> setNotification() async {
     await characteristic.setNotifyValue(true);
   }
 
@@ -32,7 +34,7 @@ class BluetoothDeviceCharacteristic {
     return characteristicName;
   }
 
-  get getCharacteristic{
+  get getCharacteristic {
     return characteristic;
   }
 }

@@ -10,7 +10,7 @@ class DeviceConnexionStatus {
     return device;
   }
 
-  set setConnexionStatus(bool status){
+  set setConnexionStatus(bool status) {
     connexionStatus = status;
   }
 }

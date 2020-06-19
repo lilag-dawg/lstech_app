@@ -18,17 +18,14 @@ class MyTrainingScreen extends StatefulWidget {
 }
 
 class _MyTrainingScreenState extends State<MyTrainingScreen> {
-
   bool _isTrainingOver = false;
-  Map<String,dynamic> selectedSession;
+  Map<String, dynamic> selectedSession;
 
   void _onEndOfTrainingClicked(bool isEndOfTraining) {
     setState(() {
       _isTrainingOver = true;
     });
   }
-
-  
 
   Widget _body(BuildContext context) {
     final wattzaManager = Provider.of<BluetoothDeviceManager>(context);
@@ -131,7 +128,7 @@ class _MyTrainingScreenState extends State<MyTrainingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isTrainingOver == false? _body(context):futureBody(),
+      body: _isTrainingOver == false ? _body(context) : futureBody(),
       backgroundColor: Constants.backGroundColor,
     );
   }

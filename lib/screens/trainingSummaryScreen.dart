@@ -138,9 +138,7 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
                     widgetTextSize: 25,
                     isAutoSize: false)),
             color: Constants.backGroundColor,
-            onPressed: () => {
-              widget.onGoBack()
-            },
+            onPressed: () => {widget.onGoBack()},
           ),
           SizedBox(height: 20),
           Row(

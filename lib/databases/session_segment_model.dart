@@ -1,7 +1,6 @@
 import '../databases/base_model.dart';
 
 class SessionSegmentTableModel extends BaseModel {
-
   static String tableName = 'session_segment_table';
 
   int sessionSegmentId;

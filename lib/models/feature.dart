@@ -1,20 +1,18 @@
-
-class Feature{
+class Feature {
   final String featureName;
   final bool status;
   final int value;
-  Feature({this.featureName,this.status,this.value});
+  Feature({this.featureName, this.status, this.value});
 
-  get name{
+  get name {
     return featureName;
   }
 
-  get isSupported{
+  get isSupported {
     return status;
   }
 
-  get valueContent{
+  get valueContent {
     return value;
   }
-
 }
