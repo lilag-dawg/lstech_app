@@ -1,4 +1,5 @@
 library constants;
+
 import 'package:flutter/material.dart';
 
 const int defaultPageIndex = 0;
@@ -14,7 +15,6 @@ var trainingStartStopWidgetHeight = 200;
 
 // emulator
 final bool isWorkingOnEmulator = true;
-
 
 enum pageIndexes {
   home,

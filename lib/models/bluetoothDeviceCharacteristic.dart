@@ -1,6 +1,5 @@
 import 'package:flutter_blue/flutter_blue.dart';
 
-
 class BluetoothDeviceCharacteristic {
   final String characteristicName;
   final BluetoothCharacteristic characteristic;
@@ -14,12 +13,11 @@ class BluetoothDeviceCharacteristic {
     return characteristicName;
   }
 
-  get getCharacteristic{
+  get getCharacteristic {
     return characteristic;
   }
 
-  set setIsCharacteristicStreaming(bool status){
+  set setIsCharacteristicStreaming(bool status) {
     isCharacteristicStreaming = status;
   }
-
 }
