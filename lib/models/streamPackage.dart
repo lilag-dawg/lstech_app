@@ -64,9 +64,8 @@ class StreamPackage {
     int rpmValue;
     await for (List<int> chunk in source) {
       if (chunk.isNotEmpty) {
-          rpmValue = (chunk[3] << 8) + chunk[2];
-          yield rpmValue;
-        
+        rpmValue = (chunk[3] << 8) + chunk[2];
+        yield rpmValue;
       }
     }
   }
@@ -115,6 +114,4 @@ class StreamPackage {
     }
     return rpm.round();
   }
-
-
 }

@@ -23,7 +23,9 @@ class BluetoothDeviceService {
   Future<void> _getWattzaCharacteristics(BluetoothService s) async {
     await Future.forEach(s.characteristics, (BluetoothCharacteristic c) async {
       await _setFeatures(c.uuid.toString().toUpperCase().substring(4, 8), c);
-      await BluetoothDeviceCharacteristic.create(c.uuid.toString().toUpperCase().substring(4, 8), c).then((value) => characteristics.add(value));
+      await BluetoothDeviceCharacteristic.create(
+              c.uuid.toString().toUpperCase().substring(4, 8), c)
+          .then((value) => characteristics.add(value));
     });
   }
 
@@ -62,7 +64,7 @@ class BluetoothDeviceService {
     features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
   }
 
-  void cpFeatures(List<int> value){
+  void cpFeatures(List<int> value) {
     int flags = value[0];
 
     bool isWheelRevSupported = (flags & 0x04 > 0);
@@ -70,7 +72,6 @@ class BluetoothDeviceService {
     features.add(Feature(featureName: "CrankRev", status: isCrankRevSupported));
     features.add(Feature(featureName: "WheelRev", status: isWheelRevSupported));
     features.add(Feature(featureName: "Power", status: true));
-
   }
 
   get name {
