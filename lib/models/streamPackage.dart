@@ -10,27 +10,26 @@ class StreamPackage {
   final String key;
   StreamPackage({this.device, this.service, this.key});
 
-  BluetoothDeviceCharacteristic _getCharacteristic(){
-    switch(key){
+  BluetoothDeviceCharacteristic _getCharacteristic() {
+    switch (key) {
       case "RPM":
-       return service.getCharacteristic("2A5B");
-       break;
+        return service.getCharacteristic("2A5B");
+        break;
       case "Battery":
-       return service.getCharacteristic("2A19");
-       break;
-      
+        return service.getCharacteristic("2A19");
+        break;
+
       default:
         return null;
     }
   }
 
-  int getBatteryLevel(){
+  int getBatteryLevel() {
     return service.getFeature("BatteryLevel").valueContent;
   }
 
-
   Stream<int> getStream() async* {
-    BluetoothDeviceCharacteristic c =_getCharacteristic();
+    BluetoothDeviceCharacteristic c = _getCharacteristic();
     if (!c.isCharacteristicStreaming) {
       c.getCharacteristic.setNotifyValue(true);
       characteristicStreamingStatus(true);
@@ -39,7 +38,6 @@ class StreamPackage {
       case "RPM":
         yield* convertRawToRpm(c.getCharacteristic.value);
         break;
-
     }
   }
 
@@ -107,7 +105,7 @@ class StreamPackage {
   }
 
   void characteristicStreamingStatus(bool status) {
-    BluetoothDeviceCharacteristic c =_getCharacteristic();
+    BluetoothDeviceCharacteristic c = _getCharacteristic();
     c.setIsCharacteristicStreaming = status;
   }
 }

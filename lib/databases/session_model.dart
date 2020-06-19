@@ -1,7 +1,6 @@
 import '../databases/base_model.dart';
 
 class SessionTableModel extends BaseModel {
-
   static String tableName = 'session_table';
 
   int sessionId;
@@ -9,9 +8,7 @@ class SessionTableModel extends BaseModel {
 
   static String primaryKeyWhereString = 'sessionId = ?';
 
-  SessionTableModel(
-      {this.sessionId,
-      this.sessionType});
+  SessionTableModel({this.sessionId, this.sessionType});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
@@ -23,7 +20,6 @@ class SessionTableModel extends BaseModel {
 
   static SessionTableModel fromMap(Map<String, dynamic> map) {
     return SessionTableModel(
-        sessionId: map['sessionId'],
-        sessionType: map['sessionType']);
+        sessionId: map['sessionId'], sessionType: map['sessionType']);
   }
 }

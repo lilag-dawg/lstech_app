@@ -228,22 +228,22 @@ class AnimatedLogo extends AnimatedWidget {
         height: 200,
         color: Colors.blue,
         child: Stack(children: <Widget>[
-              Positioned(
+          Positioned(
             child: Container(
               child: Image.asset("assets/lstech_text_only.jpg"),
-              decoration: BoxDecoration(
-                boxShadow: [BoxShadow(
-                  color:Colors.grey,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
                   blurRadius: 10.0,
-                )]
-              ),
+                )
+              ]),
             ),
           ),
-            Positioned(
+          Positioned(
             left: 0,
             bottom: 10,
             child: Transform.rotate(
-                angle: _animateBike.evaluate(animation),
+              angle: _animateBike.evaluate(animation),
               child: Container(
                   alignment: Alignment(0.0, 0.0),
                   height: 150,

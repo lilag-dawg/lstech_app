@@ -138,9 +138,7 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
                     widgetTextSize: 25,
                     isAutoSize: false)),
             color: Constants.backGroundColor,
-            onPressed: () => {
-              widget.onGoBack()
-            },
+            onPressed: () => {widget.onGoBack()},
           ),
           SizedBox(height: 20),
           Row(
@@ -235,8 +233,8 @@ class _MyTrainingScreenSummaryState extends State<MyTrainingScreenSummary> {
               'RPM',
               true),
           SizedBox(height: 20),
-          _dataSummary(
-              context, Icons.directions_bike, 'VITESSE', '--', '--', 'km/h', true),
+          _dataSummary(context, Icons.directions_bike, 'VITESSE', '--', '--',
+              'km/h', true),
         ],
       ),
     );
@@ -286,8 +284,7 @@ Widget _dataSummary(BuildContext context, IconData icon, String title,
         SizedBox(width: 20),
         Container(
             width: 140,
-            child: MyIconTitle(icon, title,
-                widgetFontWeight: FontWeight.bold)),
+            child: MyIconTitle(icon, title, widgetFontWeight: FontWeight.bold)),
         SizedBox(width: 10),
         Container(width: 2, height: 60, color: Colors.black),
         SizedBox(width: 10),
